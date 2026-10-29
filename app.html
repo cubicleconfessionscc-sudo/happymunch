@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HappyMunch — Employee Web App</title>
+<meta name="description" content="Pre-order cafeteria food, pick a pickup slot and skip the queue. The employee app, in your browser." />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --primary: #0B5ED7; --primary-dark: #0946a3; --bg: #f6f8fc; --card: #fff;
+    --text: #111827; --muted: #6b7280; --green: #16a34a; --red: #dc2626;
+    --amber: #d97706; --border: #e5e7eb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(160deg, #dbe7ff 0%, #f6f8fc 45%); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+  input, textarea { font-family: inherit; }
+
+  /* App shell — phone-width column, centered */
+  #app {
+    width: 100%; max-width: 460px; min-height: 100vh; background: var(--bg);
+    display: flex; flex-direction: column; position: relative;
+    box-shadow: 0 0 60px rgba(17,24,39,.12);
+  }
+  @media (min-width: 520px) { #app { margin: 18px 0; min-height: auto; border-radius: 26px; overflow: hidden; border: 1px solid var(--border); } }
+
+  .topbar {
+    display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+    background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10;
+  }
+  .topbar .back { font-size: 20px; color: var(--primary); font-weight: 700; padding: 2px 6px; }
+  .topbar h2 { font-size: 17px; font-weight: 800; flex: 1; }
+  .topbar .mini { font-size: 13px; color: var(--muted); }
+
+  .view { flex: 1; display: none; flex-direction: column; }
+  .view.active { display: flex; }
+
+  /* Login */
+  #view-login { justify-content: center; padding: 28px 24px; background: #fff; flex: 1; }
+  .logo-big { width: 78px; height: 78px; border-radius: 20px; margin: 0 auto 16px; display: grid; place-items: center; font-size: 40px; background: linear-gradient(135deg,#0B5ED7,#60a5fa); box-shadow: 0 12px 28px rgba(11,94,215,.35); }
+  .app-name { text-align: center; font-size: 30px; font-weight: 850; color: var(--primary); letter-spacing: -.5px; }
+  .app-sub { text-align: center; font-size: 14px; color: var(--muted); margin: 6px 0 30px; }
+  .label { font-size: 13.5px; font-weight: 700; color: #374151; margin: 14px 0 6px; display: block; }
+  .input {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 11px; padding: 13px 14px;
+    font-size: 15.5px; background: #fafafa; outline: none; transition: border .15s;
+  }
+  .input:focus { border-color: var(--primary); background: #fff; }
+  .btn-main {
+    width: 100%; background: var(--primary); color: #fff; font-size: 16px; font-weight: 750;
+    padding: 15px; border-radius: 12px; margin-top: 22px; transition: background .12s, transform .1s;
+  }
+  .btn-main:hover { background: var(--primary-dark); }
+  .btn-main:active { transform: scale(.985); }
+  .btn-main:disabled { opacity: .6; cursor: not-allowed; }
+  .demo-hint { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 18px; line-height: 1.7; }
+  .demo-hint code { background: #f3f4f6; padding: 2px 7px; border-radius: 6px; color: #374151; }
+  .err-box { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-size: 13.5px; padding: 10px 13px; border-radius: 10px; margin-top: 14px; display: none; }
+
+  /* Home */
+  #view-home { padding-bottom: 70px; }
+  .home-head { padding: 18px 16px 10px; }
+  .home-head h1 { font-size: 22px; font-weight: 800; }
+  .home-head p { font-size: 14px; color: var(--muted); margin-top: 3px; }
+  .chip-row { display: flex; gap: 8px; margin-top: 12px; }
+  .chip { background: #eef2ff; color: var(--primary); font-weight: 700; font-size: 13px; padding: 8px 14px; border-radius: 20px; }
+  .vendor-card {
+    background: var(--card); border-radius: 14px; margin: 8px 16px; padding: 15px;
+    display: flex; align-items: center; gap: 12px; border: 1px solid var(--border);
+    cursor: pointer; transition: transform .12s, box-shadow .12s;
+  }
+  .vendor-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(17,24,39,.08); }
+  .vendor-emoji { width: 46px; height: 46px; border-radius: 12px; background: #fef3c7; display: grid; place-items: center; font-size: 23px; flex-shrink: 0; }
+  .vendor-info { flex: 1; }
+  .vendor-info b { font-size: 15.5px; display: block; }
+  .vendor-info span { font-size: 13px; color: var(--muted); }
+  .badge-ok { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; color: var(--green); margin-top: 5px; }
+  .badge-ok::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .signout { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; color: var(--primary); font-weight: 700; font-size: 14px; padding: 10px; }
+
+  /* Menu grid */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 14px 90px; }
+  @media (max-width: 380px) { .menu-grid { grid-template-columns: 1fr; } }
+  .food-card { background: var(--card); border: 1px solid var(--border); border-radius: 13px; overflow: hidden; display: flex; flex-direction: column; }
+  .food-img { height: 92px; display: grid; place-items: center; font-size: 40px; background: linear-gradient(135deg,#fef9c3,#fee2e2); }
+  .food-body { padding: 10px 11px 12px; display: flex; flex-direction: column; flex: 1; }
+  .food-body b { font-size: 13.5px; line-height: 1.3; }
+  .food-body .fdesc { font-size: 11.5px; color: var(--muted); margin-top: 3px; flex: 1; }
+  .food-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+  .price { font-weight: 800; color: var(--primary); font-size: 14.5px; }
+  .add-btn { background: var(--primary); color: #fff; width: 28px; height: 28px; border-radius: 14px; font-size: 17px; font-weight: 700; line-height: 1; }
+  .add-btn:active { transform: scale(.9); }
+  .unavail { opacity: .45; pointer-events: none; }
+
+  .cart-bar {
+    position: fixed; bottom: 0; width: 100%; max-width: 460px; background: var(--primary);
+    color: #fff; text-align: center; font-weight: 750; font-size: 15.5px; padding: 15px;
+    cursor: pointer; z-index: 20; display: none;
+  }
+  @media (min-width: 520px) { .cart-bar { position: sticky; border-radius: 0 0 26px 26px; } }
+  .cart-bar.show { display: block; }
+
+  /* Cart */
+  #view-cart { padding-bottom: 20px; }
+  .cart-row { display: flex; align-items: center; gap: 10px; padding: 13px 16px; border-bottom: 1px solid #f0f1f3; background: #fff; }
+  .cart-row .ci { flex: 1; }
+  .cart-row .ci b { font-size: 14.5px; display: block; }
+  .cart-row .qty-box { display: inline-flex; align-items: center; gap: 9px; margin-top: 4px; }
+  .qty-box button { width: 22px; height: 22px; border-radius: 6px; background: #eef2ff; color: var(--primary); font-weight: 800; font-size: 14px; }
+  .qty-box span { font-size: 13px; font-weight: 700; min-width: 14px; text-align: center; }
+  .cart-price { font-weight: 800; color: var(--primary); font-size: 14.5px; }
+  .rm-btn { color: var(--red); font-size: 12px; font-weight: 700; }
+  .notes-wrap { padding: 14px 16px; }
+  .notes-wrap textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px; font-size: 14px; min-height: 70px; resize: vertical; outline: none; }
+  .notes-wrap textarea:focus { border-color: var(--primary); }
+  .total-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; background: #fff; border-top: 1px solid var(--border); }
+  .total-row .tl { font-size: 15px; font-weight: 700; }
+  .total-row .tv { font-size: 18px; font-weight: 850; }
+
+  /* Order / slots */
+  #view-order { padding-bottom: 24px; }
+  .slots-wrap { display: flex; gap: 8px; overflow-x: auto; padding: 12px 14px; scrollbar-width: thin; }
+  .slot {
+    background: #fff; border: 1.5px solid var(--border); border-radius: 11px; padding: 11px 13px;
+    min-width: 104px; text-align: center; flex-shrink: 0; cursor: pointer; transition: all .12s;
+  }
+  .slot b { font-size: 15px; display: block; }
+  .slot span { font-size: 12px; color: var(--muted); }
+  .slot.sel { background: var(--primary); border-color: var(--primary); }
+  .slot.sel b, .slot.sel span { color: #fff; }
+  .slot.full { opacity: .4; cursor: not-allowed; }
+  .slot-day { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; padding: 12px 16px 0; }
+  .success-card { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 16px; padding: 24px; margin: 18px 16px; text-align: center; display: none; }
+  .success-card h3 { color: #166534; font-size: 21px; font-weight: 850; }
+  .success-card .oid { font-size: 19px; font-weight: 800; color: var(--primary); margin: 9px 0 4px; }
+  .success-card p { font-size: 13.5px; color: var(--muted); }
+  #qr-box { display: flex; justify-content: center; margin: 16px 0 6px; }
+  #qr-box img, #qr-box canvas { border-radius: 8px; }
+  .btn-done { background: var(--primary); color: #fff; font-weight: 750; padding: 11px 26px; border-radius: 10px; margin-top: 12px; font-size: 15px; }
+
+  /* History */
+  #view-history { padding-bottom: 20px; }
+  .order-card { background: #fff; border: 1px solid var(--border); border-radius: 13px; margin: 9px 16px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+  .order-card .oc { flex: 1; }
+  .order-card .oc b { font-size: 15px; }
+  .order-card .oc span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .order-card .oc em { display: block; font-style: normal; font-size: 12px; color: #9ca3af; margin-top: 3px; }
+  .status-pill { font-size: 11.5px; font-weight: 800; padding: 5px 10px; border-radius: 8px; background: #f3f4f6; white-space: nowrap; }
+
+  .empty { text-align: center; color: var(--muted); font-size: 14px; padding: 48px 20px; }
+  .empty .big { font-size: 42px; display: block; margin-bottom: 10px; }
+  .spinner { width: 34px; height: 34px; border: 4px solid #dbe7ff; border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite; margin: auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader { display: none; position: absolute; inset: 0; background: rgba(255,255,255,.65); z-index: 30; place-items: center; }
+  .loader.show { display: grid; }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #111827; color: #fff; font-size: 14px; font-weight: 600; padding: 12px 20px;
+    border-radius: 11px; opacity: 0; transition: all .25s; z-index: 99; max-width: 90vw; text-align: center;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ================= LOGIN ================= -->
+  <div class="view active" id="view-login">
+    <div class="logo-big">🍔</div>
+    <div class="app-name">HappyMunch</div>
+    <div class="app-sub">Employee Pre-Order &amp; Smart Pickup</div>
+    <label class="label">Employee ID</label>
+    <input class="input" id="login-id" placeholder="e.g. EMP-0001" autocapitalize="characters" autocomplete="off" />
+    <label class="label">Password</label>
+    <input class="input" id="login-pw" type="password" placeholder="••••••••" autocomplete="off" />
+    <div class="err-box" id="login-err"></div>
+    <button class="btn-main" id="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="demo-hint">Demo account — <code>EMP-0001</code> / <code>Emp@12345</code></div>
+  </div>
+
+  <!-- ================= HOME ================= -->
+  <div class="view" id="view-home">
+    <div class="home-head">
+      <h1 id="hello">Hello</h1>
+      <p>Choose a cafeteria vendor</p>
+      <div class="chip-row">
+        <button class="chip" onclick="go('history')">📋 My Orders</button>
+        <button class="chip" onclick="loadVendors(true)">↻ Refresh</button>
+      </div>
+    </div>
+    <div id="vendors-list"></div>
+    <button class="signout" onclick="logout()">Sign Out</button>
+  </div>
+
+  <!-- ================= MENU ================= -->
+  <div class="view" id="view-menu">
+    <div class="topbar">
+      <button class="back" onclick="go('home')">‹</button>
+      <h2 id="menu-vendor-name">Menu</h2>
+      <span class="mini" id="menu-vendor-loc"></span>
+    </div>
+    <div class="menu-grid" id="menu-grid"></div>
+    <button class="cart-bar" id="cart-bar" onclick="go('cart')">View Cart (<span id="cart-count">0</span>) • <span id="cart-total">₹0.00</span></button>
+  </div>
+
+  <!-- ================= CART ================= -->
+  <div class="view" id="view-cart">
+    <div class="topbar">
+      <button class="back" onclick="go('menu')">‹</button>
+      <h2>Your Cart</h2>
+      <span class="mini" id="cart-item-n">0 item(s)</span>
+    </div>
+    <div id="cart-list"></div>
+    <div class="notes-wrap">
+      <label class="label">Special instructions</label>
+      <textarea id="order-notes" placeholder="e.g. less spicy, no onion"></textarea>
+    </div>
+    <div class="total-row">
+      <span class="tl">Total</span>
+      <span class="tv" id="cart-total2">₹0.00</span>
+    </div>
+    <div style="padding: 14px 16px;">
+      <button class="btn-main" style="margin-top:0" onclick="go('order')">Proceed to Order</button>
+    </div>
+  </div>
+
+  <!-- ================= ORDER ================= -->
+  <div class="view" id="view-order">
+    <div class="topbar">
+      <button class="back" onclick="go('cart')">‹</button>
+      <h2>Place Order</h2>
+    </div>
+    <div id="slot-day-label" class="slot-day">Pickup slots</div>
+    <div class="slots-wrap" id="slots"></div>
+    <div style="padding: 10px 16px;">
+      <button class="btn-main" style="margin-top:0" id="place-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+    <div class="success-card" id="success">
+      <h3>✅ Order Placed</h3>
+      <div class="oid" id="succ-oid"></div>
+      <p>Show this QR at the counter during your pickup slot</p>
+      <div id="qr-box"></div>
+      <button class="btn-done" onclick="go('history')">View My Orders</button>
+    </div>
+  </div>
+
+  <!-- ================= HISTORY ================= -->
+  <div class="view" id="view-history">
+    <div class="topbar">
+      <button class="back" onclick="go('home')">‹</button>
+      <h2>Order History</h2>
+      <button class="mini" style="color:var(--primary);font-weight:700" onclick="loadOrders()">↻</button>
+    </div>
+    <div id="orders-list"></div>
+  </div>
+
+  <div class="loader" id="loader"><div class="spinner"></div></div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ===========================================================================
+// HappyMunch Employee Web App — talks to the live backend (same API the
+// Android app uses). Session is kept in localStorage.
+// ===========================================================================
+const API = "https://backend-production-acdc.up.railway.app";
+
+const state = {
+  user: null,
+  accessToken: localStorage.getItem("hm_access") || null,
+  refreshToken: localStorage.getItem("hm_refresh") || null,
+  vendors: [],
+  vendor: null,      // currently open vendor
+  menu: [],
+  cart: [],          // { id, name, price_cents, quantity, vendor_id }
+  cartVendorId: null,
+  slots: [],
+  slot: null,
+};
+
+const $ = (id) => document.getElementById(id);
+const money = (cents) => "₹" + ((cents || 0) / 100).toFixed(2);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const VENDOR_EMOJIS = ["🍜","🥘","🥪","🥗","🍛","🍰","☕","🧁"];
+const vendorEmoji = (v) => VENDOR_EMOJIS[Math.abs(String(v.id || v.name).split("").reduce((a,c)=>a+c.charCodeAt(0),0)) % VENDOR_EMOJIS.length];
+
+// --------------------------- API helpers -----------------------------------
+// Backend wraps everything in { success, data } — unwrap like the mobile app.
+function unwrap(res) {
+  if (res && res.success === true && res.data !== undefined) return res.data;
+  return res;
+}
+
+async function request(path, options = {}) {
+  const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+  if (state.accessToken) headers.Authorization = "Bearer " + state.accessToken;
+  let res = await fetch(API + path, { ...options, headers });
+  let body = null;
+  try { body = await res.json(); } catch (_) {}
+
+  // Auto-refresh once on 401 (same behavior as the Android app)
+  if (res.status === 401 && state.refreshToken && !options._retried) {
+    const ok = await tryRefresh();
+    if (ok) return request(path, { ...options, _retried: true });
+    logoutToLogin();
+  }
+  if (!res.ok) {
+    const err = new Error((body && (body.error || body.message)) || ("Request failed (" + res.status + ")"));
+    err.status = res.status;
+    throw err;
+  }
+  return unwrap(body);
+}
+
+async function tryRefresh() {
+  try {
+    const res = await fetch(API + "/api/auth/refresh", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: state.refreshToken }),
+    });
+    if (!res.ok) return false;
+    const data = unwrap(await res.json());
+    state.accessToken = data.accessToken;
+    state.refreshToken = data.refreshToken;
+    localStorage.setItem("hm_access", data.accessToken);
+    localStorage.setItem("hm_refresh", data.refreshToken);
+    return true;
+  } catch (_) { return false; }
+}
+
+// --------------------------- UI helpers ------------------------------------
+let toastTimer;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+const loading = (on) => $("loader").classList.toggle("show", !!on);
+
+function go(view) {
+  document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+  $("view-" + view).classList.add("active");
+  window.scrollTo(0, 0);
+  if (view === "cart") renderCart();
+  if (view === "history") loadOrders();
+  if (view === "order") loadSlots();
+}
+
+// --------------------------- Auth ------------------------------------------
+async function doLogin() {
+  const identifier = $("login-id").value.trim();
+  const password = $("login-pw").value;
+  const errBox = $("login-err");
+  errBox.style.display = "none";
+  if (!identifier || !password) { errBox.textContent = "Enter Employee ID and password"; errBox.style.display = "block"; return; }
+
+  $("login-btn").disabled = true;
+  $("login-btn").textContent = "Signing in...";
+  loading(true);
+  try {
+    const data = await request("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ identifier, password }),
+    });
+    if (data.user && data.user.role !== "employee") {
+      throw new Error("This web app is for employees. Use the Vendor app or Admin dashboard for " + data.user.role + " accounts.");
+    }
+    state.user = data.user;
+    state.accessToken = data.tokens.accessToken;
+    state.refreshToken = data.tokens.refreshToken;
+    localStorage.setItem("hm_user", JSON.stringify(data.user));
+    localStorage.setItem("hm_access", data.tokens.accessToken);
+    localStorage.setItem("hm_refresh", data.tokens.refreshToken);
+    enterApp();
+  } catch (e) {
+    errBox.textContent = e.message || "Invalid Employee ID or password";
+    errBox.style.display = "block";
+  } finally {
+    loading(false);
+    $("login-btn").disabled = false;
+    $("login-btn").textContent = "Sign In";
+  }
+}
+
+function logoutToLogin() {
+  state.user = null; state.accessToken = null; state.refreshToken = null;
+  localStorage.removeItem("hm_user"); localStorage.removeItem("hm_access"); localStorage.removeItem("hm_refresh");
+  go("login");
+}
+const logout = logoutToLogin;
+
+function enterApp() {
+  $("hello").textContent = "Hello, " + (state.user.employee_id || state.user.email || "there");
+  go("home");
+  loadVendors();
+}
+
+// --------------------------- Vendors ---------------------------------------
+async function loadVendors(silent) {
+  if (!silent) loading(true);
+  try {
+    const data = await request("/api/vendors");
+    state.vendors = data.vendors || [];
+    renderVendors();
+  } catch (e) {
+    toast("Could not load vendors: " + e.message);
+  } finally { loading(false); }
+}
+
+function renderVendors() {
+  const el = $("vendors-list");
+  if (!state.vendors.length) {
+    el.innerHTML = '<div class="empty"><span class="big">🍽️</span>No vendors available yet.</div>';
+    return;
+  }
+  el.innerHTML = state.vendors.map((v, i) => `
+    <div class="vendor-card" onclick="openVendor(${i})">
+      <div class="vendor-emoji">${vendorEmoji(v)}</div>
+      <div class="vendor-info">
+        <b>${esc(v.vendor_name || v.name)}</b>
+        <span>${esc(v.counter_location || "")}</span>
+        <div class="badge-ok">Approved</div>
+      </div>
+      <div style="color:#c4c9d2;font-size:22px">›</div>
+    </div>`).join("");
+}
+
+function openVendor(i) {
+  state.vendor = state.vendors[i];
+  $("menu-vendor-name").textContent = state.vendor.vendor_name || state.vendor.name;
+  $("menu-vendor-loc").textContent = state.vendor.counter_location || "";
+  go("menu");
+  loadMenu();
+}
+
+// --------------------------- Menu ------------------------------------------
+async function loadMenu() {
+  const grid = $("menu-grid");
+  grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="spinner"></div></div>';
+  try {
+    const data = await request("/api/vendors/" + state.vendor.id + "/menu");
+    state.menu = data.menu_items || [];
+    renderMenu();
+  } catch (e) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="big">😕</span>Could not load menu.<br>' + esc(e.message) + '</div>';
+  }
+}
+
+function renderMenu() {
+  const grid = $("menu-grid");
+  if (!state.menu.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="big">📭</span>This vendor has no menu items yet.</div>';
+    return;
+  }
+  grid.innerHTML = state.menu.map((it) => `
+    <div class="food-card ${it.is_available === false ? "unavail" : ""}">
+      <div class="food-img">${it.image_url ? '<img src="' + esc(it.image_url) + '" style="width:100%;height:100%;object-fit:cover" alt="">' : "🍽️"}</div>
+      <div class="food-body">
+        <b>${esc(it.name)}</b>
+        <div class="fdesc">${esc(it.description || "")}</div>
+        <div class="food-row">
+          <span class="price">${money(it.price_cents)}</span>
+          <button class="add-btn" onclick="addToCart('${it.id}')">+</button>
+        </div>
+      </div>
+    </div>`).join("");
+}
+
+// --------------------------- Cart ------------------------------------------
+function addToCart(itemId) {
+  const item = state.menu.find((m) => m.id === itemId);
+  if (!item || item.is_available === false) { toast("This item is currently unavailable"); return; }
+  const vid = state.vendor.id;
+  // Single-vendor cart: switching vendors clears the old cart
+  let base = state.cartVendorId === vid ? state.cart : [];
+  const existing = base.find((c) => c.id === itemId);
+  if (existing) existing.quantity += 1;
+  else base = [...base, { id: item.id, name: item.name, price_cents: item.price_cents, quantity: 1, vendor_id: vid }];
+  state.cart = base;
+  state.cartVendorId = vid;
+  toast(item.name + " added to cart");
+  updateCartBar();
+}
+
+function changeQty(id, delta) {
+  const c = state.cart.find((x) => x.id === id);
+  if (!c) return;
+  c.quantity += delta;
+  if (c.quantity <= 0) state.cart = state.cart.filter((x) => x.id !== id);
+  if (!state.cart.length) state.cartVendorId = null;
+  renderCart(); updateCartBar();
+}
+const removeFromCart = (id) => { state.cart = state.cart.filter((x) => x.id !== id); if (!state.cart.length) state.cartVendorId = null; renderCart(); updateCartBar(); };
+
+const cartTotal = () => state.cart.reduce((s, i) => s + i.price_cents * i.quantity, 0);
+const cartCount = () => state.cart.reduce((s, i) => s + i.quantity, 0);
+
+function updateCartBar() {
+  const bar = $("cart-bar");
+  const n = cartCount();
+  bar.classList.toggle("show", n > 0);
+  $("cart-count").textContent = n;
+  $("cart-total").textContent = money(cartTotal());
+}
+
+function renderCart() {
+  const list = $("cart-list");
+  $("cart-item-n").textContent = state.cart.length + " item(s)";
+  $("cart-total2").textContent = money(cartTotal());
+  if (!state.cart.length) {
+    list.innerHTML = '<div class="empty"><span class="big">🛒</span>Your cart is empty.<br>Browse a vendor and add items.</div>';
+    return;
+  }
+  list.innerHTML = state.cart.map((c) => `
+    <div class="cart-row">
+      <div class="ci">
+        <b>${esc(c.name)}</b>
+        <div class="qty-box">
+          <button onclick="changeQty('${c.id}',-1)">−</button>
+          <span>${c.quantity}</span>
+          <button onclick="changeQty('${c.id}',1)">+</button>
+        </div>
+      </div>
+      <span class="cart-price">${money(c.price_cents * c.quantity)}</span>
+      <button class="rm-btn" onclick="removeFromCart('${c.id}')">Remove</button>
+    </div>`).join("");
+}
+
+// --------------------------- Slots & order ---------------------------------
+async function loadSlots() {
+  $("success").style.display = "none";
+  $("place-btn").style.display = "";
+  const el = $("slots");
+  el.innerHTML = '<div class="spinner" style="margin:14px auto"></div>';
+  try {
+    const data = await request("/api/pickup-slots");
+    const now = new Date();
+    state.slots = (data.slots || []).filter((s) => new Date(s.slot_start) >= now).slice(0, 15);
+    state.slot = null;
+    renderSlots();
+  } catch (e) {
+    el.innerHTML = '<div class="empty">Could not load pickup slots.</div>';
+    toast(e.message);
+  }
+}
+
+function renderSlots() {
+  const el = $("slots");
+  if (!state.slots.length) {
+    el.innerHTML = '<div class="empty">No upcoming pickup slots.</div>';
+    return;
+  }
+  el.innerHTML = state.slots.map((s, i) => {
+    const full = s.orders_booked >= s.max_orders;
+    const d = new Date(s.slot_start);
+    return `<div class="slot ${state.slot && state.slot.id === s.id ? "sel" : ""} ${full ? "full" : ""}" onclick="pickSlot(${i})">
+      <b>${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</b>
+      <span>${d.toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" })}</span>
+      <span style="display:block;margin-top:2px">${full ? "Full" : s.orders_booked + "/" + s.max_orders + " booked"}</span>
+    </div>`;
+  }).join("");
+}
+
+function pickSlot(i) {
+  const s = state.slots[i];
+  if (s.orders_booked >= s.max_orders) { toast("That slot is full — pick another"); return; }
+  state.slot = s;
+  renderSlots();
+}
+
+async function placeOrder() {
+  if (!state.cart.length) { toast("Add items to cart first"); go("menu"); return; }
+  if (!state.slot) { toast("Choose a pickup time"); return; }
+  const btn = $("place-btn");
+  btn.disabled = true; btn.textContent = "Placing order...";
+  loading(true);
+  try {
+    const data = await request("/api/orders", {
+      method: "POST",
+      body: JSON.stringify({
+        vendor_id: state.cartVendorId,
+        items: state.cart.map((i) => ({ menu_item_id: i.id, quantity: i.quantity })),
+        pickup_slot_id: state.slot.id,
+        notes: $("order-notes").value.trim(),
+      }),
+    });
+    const order = data.order;
+    state.cart = []; state.cartVendorId = null; $("order-notes").value = "";
+    updateCartBar();
+    // Success card + QR
+    $("succ-oid").textContent = "Order #" + order.order_number;
+    $("success").style.display = "block";
+    btn.style.display = "none";
+    const qrBox = $("qr-box");
+    qrBox.innerHTML = "";
+    const payload = order.qr_code_payload || order.order_number;
+    if (window.QRCode) new QRCode(qrBox, { text: payload, width: 176, height: 176, colorDark: "#111827", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+    else qrBox.innerHTML = '<div style="font-weight:800;font-size:17px">' + esc(order.order_number) + '</div>';
+    $("success").scrollIntoView({ behavior: "smooth" });
+    toast("Order placed! #" + order.order_number);
+  } catch (e) {
+    toast("Order failed: " + e.message);
+  } finally {
+    loading(false);
+    btn.disabled = false; btn.textContent = "Place Order";
+  }
+}
+
+// --------------------------- History ---------------------------------------
+const STATUS_COLORS = {
+  collected: ["#dcfce7", "#166534"], ready_for_pickup: ["#dbeafe", "#1e40af"],
+  preparing: ["#fef3c7", "#92400e"], confirmed: ["#f3f4f6", "#374151"],
+  cancelled: ["#fee2e2", "#991b1b"], refunded: ["#f3e8ff", "#6b21a8"],
+  payment_failed: ["#fee2e2", "#991b1b"], placed: ["#f3f4f6", "#374151"],
+};
+
+async function loadOrders() {
+  const list = $("orders-list");
+  list.innerHTML = '<div class="empty"><div class="spinner"></div></div>';
+  try {
+    const data = await request("/api/orders/my");
+    const orders = data.orders || [];
+    if (!orders.length) {
+      list.innerHTML = '<div class="empty"><span class="big">🧾</span>No orders yet.<br>Your orders will show up here.</div>';
+      return;
+    }
+    list.innerHTML = orders.map((o) => {
+      const [bg, fg] = STATUS_COLORS[o.status] || ["#f3f4f6", "#374151"];
+      const when = o.pickup_slot_start ? new Date(o.pickup_slot_start) : (o.created_at ? new Date(o.created_at) : null);
+      return `<div class="order-card">
+        <div class="oc">
+          <b>#${esc(o.order_number)}</b>
+          <span>${esc(o.vendor_name || "")}</span>
+          ${when ? "<em>Pickup " + when.toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) + "</em>" : ""}
+        </div>
+        <div style="text-align:right">
+          <div class="status-pill" style="background:${bg};color:${fg}">${esc(String(o.status).replace(/_/g, " "))}</div>
+          <b style="display:block;margin-top:7px;color:var(--primary)">${money(o.total_cents)}</b>
+        </div>
+      </div>`;
+    }).join("");
+  } catch (e) {
+    list.innerHTML = '<div class="empty"><span class="big">😕</span>Could not load orders.</div>';
+  }
+}
+
+// --------------------------- Boot ------------------------------------------
+// Restore session on load (like the app's rehydrate)
+(function boot() {
+  const saved = localStorage.getItem("hm_user");
+  if (saved && state.accessToken) {
+    try { state.user = JSON.parse(saved); enterApp(); return; } catch (_) {}
+  }
+  go("login");
+})();
+
+// Enter key on login
+$("login-pw").addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); });
+$("login-id").addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); });
+</script>
+</body>
+</html>
