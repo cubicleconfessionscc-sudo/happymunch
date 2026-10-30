@@ -3,138 +3,134 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>HappyMunch — Smart Cafeteria Pre-Order &amp; Pickup System</title>
-<meta name="description" content="Download the HappyMunch employee and vendor Android apps, or order food right in your browser. Smart cafeteria pre-order and pickup system." />
+<title>HappyMunch — Smart Cafeteria Pre-Order, UPI Pay &amp; Smart Pickup</title>
+<meta name="description" content="Download the HappyMunch employee and vendor Android apps, or order and pay with UPI right in your browser. Smart cafeteria pre-order and pickup system." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --primary: #0B5ED7;
-    --primary-dark: #0946a3;
-    --bg: #f6f8fc;
-    --card: #ffffff;
-    --text: #111827;
-    --muted: #6b7280;
-    --green: #16a34a;
-    --border: #e5e7eb;
-    --radius: 16px;
+    --primary: #4f46e5; --primary-2: #7c3aed; --accent: #f97316; --ok: #10b981;
+    --bg: #0b1020; --card: #ffffff; --text: #0f172a; --muted: #64748b; --line: #e6e9f5;
+    --grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #a855f7 100%);
+    --radius: 20px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--bg); color: var(--text); line-height: 1.55;
-  }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #fafbff; color: var(--text); line-height: 1.55; }
   a { color: var(--primary); text-decoration: none; }
-  .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-  /* ---------- Nav ---------- */
-  nav {
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 62px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; color: var(--text); }
-  .brand .logo { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, #0B5ED7, #3b82f6); color: #fff; font-size: 18px; }
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.82);
+    backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .brand { display: flex; align-items: center; gap: 11px; font-weight: 900; font-size: 20px; letter-spacing: -.5px; }
+  .brand .logo { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+    background: var(--grad); color: #fff; font-size: 20px; box-shadow: 0 8px 20px -8px rgba(79,70,229,.7); }
   .nav-links { display: flex; gap: 6px; align-items: center; }
-  .nav-links a { padding: 8px 14px; border-radius: 10px; font-weight: 600; font-size: 14px; color: var(--muted); }
+  .nav-links a { padding: 9px 15px; border-radius: 11px; font-weight: 700; font-size: 14px; color: var(--muted); }
   .nav-links a:hover { background: #eef2ff; color: var(--primary); }
-  .nav-links a.cta { background: var(--primary); color: #fff; }
-  .nav-links a.cta:hover { background: var(--primary-dark); }
+  .nav-links a.cta { background: var(--grad); color: #fff; box-shadow: 0 8px 20px -8px rgba(79,70,229,.6); }
   @media (max-width: 640px) { .nav-links a:not(.cta) { display: none; } }
 
-  /* ---------- Hero ---------- */
-  .hero { padding: 72px 0 56px; text-align: center; }
-  .pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: #eef2ff; color: var(--primary); font-weight: 700; font-size: 13px;
-    padding: 7px 16px; border-radius: 999px; margin-bottom: 22px;
-  }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(22,163,74,.15); }
-  .hero h1 { font-size: clamp(32px, 6vw, 54px); font-weight: 850; letter-spacing: -1.5px; line-height: 1.1; }
-  .hero h1 .grad { background: linear-gradient(120deg, #0B5ED7, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .hero p.sub { font-size: clamp(15px, 2.5vw, 19px); color: var(--muted); max-width: 640px; margin: 18px auto 0; }
-  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 9px; justify-content: center;
-    padding: 14px 26px; border-radius: 13px; font-weight: 700; font-size: 15px;
-    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-  }
+  /* Hero */
+  .hero { position: relative; padding: 84px 0 66px; text-align: center; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -40% -10% auto; height: 520px;
+    background: radial-gradient(600px 300px at 50% 0%, #7c3aed22, transparent 70%); z-index: -1; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; background: #eef2ff; color: var(--primary);
+    font-weight: 800; font-size: 13px; padding: 8px 18px; border-radius: 999px; margin-bottom: 24px; border: 1px solid #e0e7ff; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px rgba(16,185,129,.18); }
+  .hero h1 { font-size: clamp(34px, 6.4vw, 60px); font-weight: 900; letter-spacing: -2px; line-height: 1.05; }
+  .hero h1 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.sub { font-size: clamp(15px, 2.5vw, 19px); color: var(--muted); max-width: 660px; margin: 20px auto 0; }
+  .hero-btns { display: flex; gap: 13px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; justify-content: center; padding: 15px 28px;
+    border-radius: 15px; font-weight: 800; font-size: 15.5px; transition: transform .12s ease, box-shadow .12s ease; }
   .btn:hover { transform: translateY(-2px); }
-  .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 8px 22px rgba(11,94,215,.32); }
-  .btn-primary:hover { background: var(--primary-dark); }
-  .btn-ghost { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
+  .btn-primary { background: var(--grad); color: #fff; box-shadow: 0 14px 32px -12px rgba(79,70,229,.7); }
+  .btn-ghost { background: #fff; color: var(--text); border: 1.5px solid var(--line); }
   .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
 
-  /* ---------- Stats ---------- */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 46px 0 10px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 52px 0 10px; }
   @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-  .stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; }
-  .stat b { display: block; font-size: 24px; font-weight: 800; color: var(--primary); }
-  .stat span { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; text-align: center;
+    box-shadow: 0 8px 22px -18px rgba(15,23,42,.4); }
+  .stat b { display: block; font-size: 26px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stat span { font-size: 12.5px; color: var(--muted); font-weight: 700; }
 
-  /* ---------- Sections ---------- */
-  section { padding: 54px 0; }
-  .section-head { text-align: center; margin-bottom: 34px; }
-  .section-head h2 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; letter-spacing: -0.8px; }
-  .section-head p { color: var(--muted); margin-top: 8px; font-size: 15px; }
+  section { padding: 60px 0; }
+  .section-head { text-align: center; margin-bottom: 38px; }
+  .section-head h2 { font-size: clamp(25px, 4.4vw, 38px); font-weight: 900; letter-spacing: -1px; }
+  .section-head p { color: var(--muted); margin-top: 9px; font-size: 15.5px; }
 
-  /* ---------- Download cards ---------- */
-  .dl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  /* Downloads */
+  .dl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
   @media (max-width: 720px) { .dl-grid { grid-template-columns: 1fr; } }
-  .dl-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 26px; display: flex; flex-direction: column; gap: 6px;
-    transition: transform .14s ease, box-shadow .14s ease;
-  }
-  .dl-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(17,24,39,.09); }
-  .dl-icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 26px; margin-bottom: 10px; }
-  .dl-icon.emp { background: linear-gradient(135deg,#0B5ED7,#60a5fa); }
-  .dl-icon.vnd { background: linear-gradient(135deg,#f59e0b,#fbbf24); }
-  .dl-card h3 { font-size: 19px; font-weight: 800; }
-  .dl-card .desc { font-size: 14px; color: var(--muted); min-height: 42px; }
-  .dl-meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 16px; }
-  .tag { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: #f3f4f6; color: #374151; }
-  .dl-btns { display: flex; gap: 10px; margin-top: auto; }
-  .dl-btns a {
-    flex: 1; text-align: center; padding: 12px; border-radius: 11px; font-weight: 700; font-size: 14px;
-    background: var(--primary); color: #fff; transition: background .12s ease;
-  }
-  .dl-btns a:hover { background: var(--primary-dark); }
+  .dl-card { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 28px;
+    display: flex; flex-direction: column; gap: 6px; transition: transform .14s ease, box-shadow .14s ease;
+    box-shadow: 0 10px 30px -22px rgba(15,23,42,.5); }
+  .dl-card:hover { transform: translateY(-4px); box-shadow: 0 24px 46px -26px rgba(15,23,42,.45); }
+  .dl-icon { width: 58px; height: 58px; border-radius: 17px; display: grid; place-items: center; font-size: 29px; margin-bottom: 12px;
+    box-shadow: 0 10px 22px -10px rgba(0,0,0,.4); }
+  .dl-icon.emp { background: var(--grad); }
+  .dl-icon.vnd { background: linear-gradient(135deg,#f59e0b,#fb923c); }
+  .dl-card h3 { font-size: 20px; font-weight: 900; letter-spacing: -.4px; }
+  .dl-card .desc { font-size: 14px; color: var(--muted); min-height: 44px; }
+  .dl-meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 13px 0 18px; }
+  .tag { font-size: 12px; font-weight: 800; padding: 5px 11px; border-radius: 9px; background: #f1f5f9; color: #334155; }
+  .dl-btns { display: flex; gap: 11px; margin-top: auto; }
+  .dl-btns a { flex: 1; text-align: center; padding: 13px; border-radius: 13px; font-weight: 800; font-size: 14px;
+    background: var(--grad); color: #fff; transition: filter .12s ease; }
+  .dl-btns a:hover { filter: brightness(1.08); }
   .dl-btns a.secondary { background: #eef2ff; color: var(--primary); }
-  .dl-btns a.secondary:hover { background: #dde6ff; }
 
-  /* ---------- Steps ---------- */
+  /* UPI band */
+  .upi-band { background: var(--bg); border-radius: 28px; padding: 40px 30px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+  .upi-band::before { content: "💳"; position: absolute; right: -10px; top: -20px; font-size: 140px; opacity: .08; }
+  .upi-band h3 { font-size: clamp(22px, 4vw, 30px); font-weight: 900; letter-spacing: -.6px; }
+  .upi-band p { color: #c7d2fe; margin: 10px auto 22px; max-width: 560px; font-size: 15px; }
+  .upi-apps { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .upi-app { padding: 12px 22px; border-radius: 14px; font-weight: 800; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 8px; }
+  .ua-gpay { background: linear-gradient(135deg,#1a73e8,#4285f4); }
+  .ua-phonepe { background: linear-gradient(135deg,#5f259f,#7b2ff7); }
+  .ua-paytm { background: linear-gradient(135deg,#00baf2,#26a5e4); }
+  .ua-note { background: #ffffff14; border: 1px solid #ffffff2a; }
+
+  /* Steps */
   .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   @media (max-width: 780px) { .steps { grid-template-columns: 1fr; } }
-  .step { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
-  .step .num { width: 34px; height: 34px; border-radius: 10px; background: #eef2ff; color: var(--primary); font-weight: 800; display: grid; place-items: center; margin-bottom: 12px; }
-  .step h4 { font-size: 16px; font-weight: 750; margin-bottom: 6px; }
+  .step { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px;
+    box-shadow: 0 8px 22px -20px rgba(15,23,42,.5); }
+  .step .num { width: 38px; height: 38px; border-radius: 12px; background: var(--grad); color: #fff; font-weight: 900;
+    display: grid; place-items: center; margin-bottom: 13px; box-shadow: 0 8px 18px -8px rgba(79,70,229,.7); }
+  .step h4 { font-size: 17px; font-weight: 850; margin-bottom: 6px; }
   .step p { font-size: 14px; color: var(--muted); }
 
-  /* ---------- Demo creds ---------- */
-  .creds { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; overflow-x: auto; }
+  /* Creds */
+  .creds { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; overflow-x: auto;
+    box-shadow: 0 8px 22px -20px rgba(15,23,42,.5); }
   table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 480px; }
-  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
-  td { padding: 11px 12px; border-bottom: 1px solid #f3f4f6; }
+  th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .7px; color: var(--muted); padding: 9px 12px; border-bottom: 1px solid var(--line); }
+  td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
   tr:last-child td { border-bottom: none; }
-  td code { background: #f3f4f6; padding: 3px 8px; border-radius: 6px; font-size: 13px; }
+  td code { background: #f1f5f9; padding: 3px 9px; border-radius: 7px; font-size: 12.5px; font-weight: 700; }
 
-  /* ---------- Live links ---------- */
-  .links-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  /* Live links */
+  .links-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
   @media (max-width: 780px) { .links-grid { grid-template-columns: 1fr; } }
-  .live-link {
-    display: flex; align-items: center; gap: 13px; background: var(--card);
-    border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; color: var(--text);
-    transition: transform .12s ease, border-color .12s ease;
-  }
+  .live-link { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 19px; color: var(--text); transition: transform .12s ease, border-color .12s ease;
+    box-shadow: 0 8px 22px -20px rgba(15,23,42,.5); }
   .live-link:hover { transform: translateY(-2px); border-color: var(--primary); }
-  .live-link .ico { width: 42px; height: 42px; border-radius: 11px; display: grid; place-items: center; font-size: 20px; background: #eef2ff; flex-shrink: 0; }
-  .live-link b { display: block; font-size: 15px; }
+  .live-link .ico { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; font-size: 22px;
+    background: #eef2ff; flex-shrink: 0; }
+  .live-link b { display: block; font-size: 15.5px; }
   .live-link span { font-size: 12.5px; color: var(--muted); }
 
-  /* ---------- Footer ---------- */
-  footer { border-top: 1px solid var(--border); background: #fff; padding: 26px 0; margin-top: 20px; }
+  footer { border-top: 1px solid var(--line); background: #fff; padding: 28px 0; margin-top: 20px; }
   .foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 13.5px; color: var(--muted); }
-  .note { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 13.5px; padding: 12px 16px; border-radius: 11px; margin-top: 18px; }
+  .note { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 13.5px; padding: 13px 17px; border-radius: 13px; margin-top: 18px; }
 </style>
 </head>
 <body>
@@ -153,8 +149,8 @@
 <header class="hero">
   <div class="container">
     <div class="pill"><span class="dot"></span> Live &amp; ready to use</div>
-    <h1>Skip the queue.<br /><span class="grad">Pre-order. Pick up. Munch.</span></h1>
-    <p class="sub">HappyMunch is a smart cafeteria ordering system — employees order from their phone or browser, vendors prepare in advance, and everyone picks up at a scheduled slot. No lines, no waiting.</p>
+    <h1>Skip the queue.<br /><span class="grad">Pre-order · UPI pay · Pick up.</span></h1>
+    <p class="sub">HappyMunch is a smart cafeteria ordering system — employees order from their phone or browser and pay online with UPI, vendors prepare in advance, and everyone picks up at a scheduled slot. No lines, no cash.</p>
     <div class="hero-btns">
       <a class="btn btn-primary" href="app.html">🍽️ Order in your browser</a>
       <a class="btn btn-ghost" href="#download">⬇️ Download the apps</a>
@@ -162,7 +158,7 @@
 
     <div class="stats">
       <div class="stat"><b>2</b><span>Android apps</span></div>
-      <div class="stat"><b>Web</b><span>Works in any browser</span></div>
+      <div class="stat"><b>UPI</b><span>GPay · PhonePe · Paytm</span></div>
       <div class="stat"><b>Live</b><span>Cloud backend</span></div>
       <div class="stat"><b>Free</b><span>Everything to download</span></div>
     </div>
@@ -179,8 +175,8 @@
       <div class="dl-card">
         <div class="dl-icon emp">🍔</div>
         <h3>HappyMunch — Employee App</h3>
-        <div class="desc">Browse vendors, pre-order food, pay, choose a pickup slot and collect with a QR code.</div>
-        <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.0.0</span><span class="tag">81.7 MB</span></div>
+        <div class="desc">Browse vendors, pre-order food, pay online with UPI, choose a pickup slot and collect with a QR code.</div>
+        <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.0.0</span><span class="tag">81.7 MB</span><span class="tag">UPI pay</span></div>
         <div class="dl-btns">
           <a href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.0.0/HappyMunch-Employee-v1.0.0.apk">Download APK</a>
           <a class="secondary" href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.0.0/HappyMunch-Employee-v1.0.0.aab">AAB</a>
@@ -189,8 +185,8 @@
       <div class="dl-card">
         <div class="dl-icon vnd">👨‍🍳</div>
         <h3>HappyMunch — Vendor App</h3>
-        <div class="desc">Manage your menu, see incoming orders live, mark them ready and verify pickup by order number.</div>
-        <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.0.0</span><span class="tag">81.7 MB</span></div>
+        <div class="desc">Set your UPI payment number, manage your menu, see incoming orders live, mark them ready and verify pickup.</div>
+        <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.0.0</span><span class="tag">81.7 MB</span><span class="tag">UPI collect</span></div>
         <div class="dl-btns">
           <a href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.0.0/HappyMunch-Vendor-v1.0.0.apk">Download APK</a>
           <a class="secondary" href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.0.0/HappyMunch-Vendor-v1.0.0.aab">AAB</a>
@@ -201,14 +197,29 @@
   </div>
 </section>
 
+<section id="upi" style="padding-top:0">
+  <div class="container">
+    <div class="upi-band">
+      <h3>Pay online with UPI — no cash, no change</h3>
+      <p>Every order is paid online. The vendor's UPI number is built in, so one tap on Pay opens GPay, PhonePe or Paytm with the amount pre-filled. When you're back, your order is confirmed and in the kitchen.</p>
+      <div class="upi-apps">
+        <span class="upi-app ua-gpay">🅶 GPay</span>
+        <span class="upi-app ua-phonepe">📱 PhonePe</span>
+        <span class="upi-app ua-paytm">🅿️ Paytm</span>
+        <span class="upi-app ua-note">🔒 100% online · no COD</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="web" style="background:#eef2ff;">
   <div class="container">
     <div class="section-head">
       <h2>No app? Order right in your browser</h2>
-      <p>The full employee experience — login, browse vendors, build a cart, pick a pickup slot and track your order — as a web app.</p>
+      <p>The full employee experience — login, browse vendors, build a cart, pay with UPI, pick a pickup slot and track your order — as a web app.</p>
     </div>
     <div style="text-align:center;">
-      <a class="btn btn-primary" href="app.html" style="font-size:16px; padding:16px 32px;">🍔 Open the HappyMunch Web App</a>
+      <a class="btn btn-primary" href="app.html" style="font-size:16px; padding:16px 34px;">🍔 Open the HappyMunch Web App</a>
     </div>
   </div>
 </section>
@@ -223,17 +234,17 @@
       <div class="step">
         <div class="num">1</div>
         <h4>Browse &amp; order</h4>
-        <p>Log in with your employee ID, pick a cafeteria vendor and add items to your cart. Pay online (test mode) in seconds.</p>
+        <p>Log in with your employee ID, pick a cafeteria vendor and add items to your cart. It takes seconds.</p>
       </div>
       <div class="step">
         <div class="num">2</div>
-        <h4>Pick your slot</h4>
-        <p>Choose a pickup time that suits you. The kitchen sees your order instantly and starts preparing it ahead of time.</p>
+        <h4>Pay with UPI</h4>
+        <p>Tap Pay to open GPay, PhonePe or Paytm with the vendor's number and amount pre-filled. Online payment only — no cash.</p>
       </div>
       <div class="step">
         <div class="num">3</div>
-        <h4>Collect &amp; munch</h4>
-        <p>Show your QR code at the counter at your slot time. The vendor scans or enters your order number — done.</p>
+        <h4>Pick up &amp; munch</h4>
+        <p>Choose a pickup slot, show your QR at the counter at your time. The food is ready and waiting.</p>
       </div>
     </div>
   </div>
@@ -248,7 +259,7 @@
     <div class="links-grid">
       <a class="live-link" href="app.html">
         <div class="ico">🍔</div>
-        <div><b>Employee Web App</b><span>Order food in your browser</span></div>
+        <div><b>Employee Web App</b><span>Order &amp; pay in your browser</span></div>
       </a>
       <a class="live-link" href="https://admin-dashboard-production-2a67.up.railway.app" target="_blank" rel="noopener">
         <div class="ico">📊</div>
@@ -284,7 +295,7 @@
 <footer>
   <div class="container foot">
     <div>© 2026 HappyMunch — Smart Cafeteria Ordering System</div>
-    <div>Rails · Node · PostgreSQL · Expo · <a href="app.html">Web App</a></div>
+    <div>Node · PostgreSQL · Expo · UPI · <a href="app.html">Web App</a></div>
   </div>
 </footer>
 
