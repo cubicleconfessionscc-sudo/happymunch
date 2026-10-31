@@ -94,7 +94,6 @@
     margin: 14px 14px 6px; padding: 20px; border-radius: 22px; color: #fff;
     background: var(--grad); box-shadow: var(--shadow); position: relative; overflow: hidden;
   }
-  .home-hero::after { content: "🍔"; position: absolute; right: -6px; bottom: -14px; font-size: 92px; opacity: .22; transform: rotate(-12deg); }
   .home-hero h1 { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
   .home-hero p { font-size: 13px; color: #e0e7ff; margin-top: 4px; }
   .chip-row { display: flex; gap: 8px; margin: 12px 14px 4px; }
@@ -234,14 +233,135 @@
     background: #0f172a; color: #fff; font-size: 13.5px; font-weight: 600; padding: 12px 20px;
     border-radius: 12px; opacity: 0; transition: all .25s; z-index: 99; max-width: 90vw; text-align: center; box-shadow: 0 12px 30px -10px rgba(0,0,0,.6); }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Inline SVG icons (render identically in every browser, unlike emoji) */
+  .ic { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
+  .home-hero::after { content: ""; position: absolute; right: -6px; bottom: -14px; width: 92px; height: 92px; opacity: .22; transform: rotate(-12deg);
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M5 27C5 15.4 16.2 6 32 6s27 9.4 27 21H5z' fill='%23ffffff'/%3E%3Cpath d='M5 28h54c0 3.3-2.7 6-6 6-1.4 0-2.7-.5-3.7-1.3-.9 1-2.2 1.7-3.8 1.7-1.5 0-2.9-.6-3.8-1.6-.9.9-2.2 1.6-3.8 1.6-1.4 0-2.7-.5-3.7-1.4-.9.8-2.2 1.4-3.8 1.4-1.4 0-2.7-.5-3.7-1.3-.9.9-2.2 1.5-3.8 1.5s-2.9-.6-3.8-1.5c-1 .8-2.3 1.3-3.7 1.3-1.5 0-2.9-.6-3.8-1.6-1 .8-2.3 1.3-3.7 1.3-3.3 0-6-2.7-6-6z' fill='%23ffffff'/%3E%3Crect x='7' y='36' width='50' height='9' rx='4.5' fill='%23ffffff'/%3E%3Cpath d='M7 45h50v2.5C57 53.5 52 58 46 58H18c-6 0-11-4.5-11-10.5V45z' fill='%23ffffff'/%3E%3C/svg%3E") center/contain no-repeat; }
+  .logo-big svg { width: 44px; height: 44px; }
+  .chip svg { width: 15px; height: 15px; vertical-align: -2px; }
+  .cb-l svg { width: 16px; height: 16px; vertical-align: -3px; }
+  .vendor-emoji svg { width: 30px; height: 30px; }
+  .food-img svg { width: 40px; height: 40px; }
+  .empty .big svg { width: 42px; height: 42px; }
+  .pay-to .pt-ico svg { width: 20px; height: 20px; }
+  .pay-app .ico svg { width: 20px; height: 20px; }
+  .paid-btn svg { width: 15px; height: 15px; vertical-align: -2px; }
+  .paid-tag svg { width: 10px; height: 10px; vertical-align: 0px; }
+  .success-card .tick svg { width: 34px; height: 34px; }
 </style>
 </head>
 <body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="ic-burger" viewBox="0 0 64 64">
+    <path d="M5 27C5 15.4 16.2 6 32 6s27 9.4 27 21H5z" fill="#f6a94a"/>
+    <g fill="#fde68a"><ellipse cx="20" cy="17" rx="2.2" ry="1.5"/><ellipse cx="32" cy="13.5" rx="2.2" ry="1.5"/><ellipse cx="44" cy="17" rx="2.2" ry="1.5"/></g>
+    <path d="M5 28h54c0 3.3-2.7 6-6 6-1.4 0-2.7-.5-3.7-1.3-.9 1-2.2 1.7-3.8 1.7-1.5 0-2.9-.6-3.8-1.6-.9.9-2.2 1.6-3.8 1.6-1.4 0-2.7-.5-3.7-1.4-.9.8-2.2 1.4-3.8 1.4-1.4 0-2.7-.5-3.7-1.3-.9.9-2.2 1.5-3.8 1.5s-2.9-.6-3.8-1.5c-1 .8-2.3 1.3-3.7 1.3-1.5 0-2.9-.6-3.8-1.6-1 .8-2.3 1.3-3.7 1.3-3.3 0-6-2.7-6-6z" fill="#7cc36a"/>
+    <rect x="7" y="36" width="50" height="9" rx="4.5" fill="#7c3a1e"/>
+    <path d="M7 45h50v2.5C57 53.5 52 58 46 58H18c-6 0-11-4.5-11-10.5V45z" fill="#f6a94a"/>
+  </symbol>
+  <symbol id="ic-check" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 34l14 14 30-32"/>
+  </symbol>
+  <symbol id="ic-plate" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="32" cy="34" r="17"/><circle cx="32" cy="34" r="9" opacity=".45"/>
+    <path d="M13 8v13M9 8v9c0 2.4 1.8 4 4 4s4-1.6 4-4V8M52 8c-3.4 0-6 5.4-6 11s2 8 4.5 8v29"/>
+  </symbol>
+  <symbol id="ic-download" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 8v30M18 26l14 14 14-14M10 52h44"/>
+  </symbol>
+  <symbol id="ic-phone" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5">
+    <rect x="18" y="6" width="28" height="52" rx="7"/><path d="M28 12h8" stroke-linecap="round"/>
+    <circle cx="32" cy="50" r="2.5" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ic-gpay" viewBox="0 0 64 64">
+    <text x="32" y="46" text-anchor="middle" font-size="44" font-weight="800" fill="#ffffff" font-family="Arial, sans-serif">G</text>
+  </symbol>
+  <symbol id="ic-paytm" viewBox="0 0 64 64">
+    <text x="32" y="46" text-anchor="middle" font-size="44" font-weight="800" fill="#ffffff" font-family="Arial, sans-serif">P</text>
+  </symbol>
+  <symbol id="ic-lock" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round">
+    <rect x="14" y="27" width="36" height="29" rx="7"/><path d="M21 27v-8a11 11 0 0 1 22 0v8"/>
+    <circle cx="32" cy="41" r="3" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ic-card" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round">
+    <rect x="6" y="14" width="52" height="36" rx="7"/><path d="M6 26h52" stroke-width="8"/>
+  </symbol>
+  <symbol id="ic-clipboard" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round">
+    <rect x="12" y="10" width="40" height="48" rx="8"/><rect x="22" y="4" width="20" height="12" rx="4" fill="currentColor"/>
+    <path d="M22 32h20M22 43h14" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="ic-refresh" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M54 32a22 22 0 1 1-6.5-15.5"/><path d="M54 8v14H40"/>
+  </symbol>
+  <symbol id="ic-cart" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 8h8l7.6 33.2a4 4 0 0 0 3.9 3.1h22.9a4 4 0 0 0 3.9-3L58 20H16.5"/>
+    <circle cx="26" cy="54" r="3.5" fill="currentColor" stroke="none"/>
+    <circle cx="47" cy="54" r="3.5" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ic-receipt" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M14 4h36v56l-7-4.5-7 4.5-7-4.5L22 60l-8-4.5V4z"/><path d="M24 20h16M24 32h16"/>
+  </symbol>
+  <symbol id="ic-inbox" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round">
+    <path d="M8 34 16 10h32l8 24v18a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V34z"/><path d="M8 34h14l4 8h12l4-8h14"/>
+  </symbol>
+  <symbol id="ic-sad" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round">
+    <circle cx="32" cy="32" r="26"/><path d="M22 43c2.5-3.5 5.8-5 10-5s7.5 1.5 10 5"/>
+    <path d="M22 24h.1M42 24h.1" stroke-width="6.5"/>
+  </symbol>
+  <symbol id="ic-food1" viewBox="0 0 64 64">
+    <path d="M6 32h52c0 13-11.7 22-26 22S6 45 6 32z" fill="#f59e0b"/>
+    <path d="M12 30c4-8 11-12 20-12s16 4 20 12H12z" fill="#fde68a"/>
+    <path d="M24 14c-2-2.5 1-4.5-1-7M34 12c-2-2.5 1-4.5-1-7M44 14c-2-2.5 1-4.5-1-7" stroke="#94a3b8" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="ic-food2" viewBox="0 0 64 64">
+    <rect x="8" y="26" width="48" height="26" rx="8" fill="#dc2626"/>
+    <rect x="4" y="22" width="56" height="8" rx="4" fill="#b91c1c"/>
+    <circle cx="24" cy="38" r="3" fill="#fca5a5"/>
+    <circle cx="38" cy="44" r="2.5" fill="#fde68a"/>
+    <path d="M24 16c-2-2.5 1-4.5-1-7M40 16c-2-2.5 1-4.5-1-7" stroke="#94a3b8" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="ic-food3" viewBox="0 0 64 64">
+    <path d="M8 26 32 8l24 18H8z" fill="#f59e0b"/>
+    <rect x="8" y="28" width="48" height="7" rx="3.5" fill="#22c55e"/>
+    <rect x="8" y="37" width="48" height="8" rx="4" fill="#78350f"/>
+    <path d="M8 47h48v2c0 4-3.6 7-8 7H16c-4.4 0-8-3-8-7v-2z" fill="#f59e0b"/>
+  </symbol>
+  <symbol id="ic-food4" viewBox="0 0 64 64">
+    <path d="M6 32h52c0 13-11.7 22-26 22S6 45 6 32z" fill="#e2e8f0"/>
+    <path d="M14 30c3-8 9-13 18-13s15 5 18 13H14z" fill="#22c55e"/>
+    <circle cx="24" cy="24" r="3.5" fill="#ef4444"/>
+    <circle cx="40" cy="26" r="3.5" fill="#f59e0b"/>
+  </symbol>
+  <symbol id="ic-food5" viewBox="0 0 64 64">
+    <ellipse cx="32" cy="47" rx="26" ry="7" fill="#e2e8f0"/>
+    <path d="M12 45c0-11 9-20 20-20s20 9 20 20H12z" fill="#fde68a"/>
+    <circle cx="24" cy="35" r="2.5" fill="#f97316"/>
+    <circle cx="38" cy="31" r="2.5" fill="#22c55e"/>
+    <circle cx="33" cy="40" r="2.5" fill="#dc2626"/>
+  </symbol>
+  <symbol id="ic-food6" viewBox="0 0 64 64">
+    <path d="M12 52 32 10l20 42H12z" fill="#fda4af"/>
+    <path d="M22 34h20" stroke="#fff" stroke-width="4"/>
+    <circle cx="32" cy="18" r="3.5" fill="#e11d48"/>
+  </symbol>
+  <symbol id="ic-food7" viewBox="0 0 64 64">
+    <path d="M12 24h32v16a12 12 0 0 1-12 12h-8a12 12 0 0 1-12-12V24z" fill="#a16207"/>
+    <path d="M44 28h4a7 7 0 0 1 0 14h-4" fill="none" stroke="#a16207" stroke-width="4"/>
+    <path d="M20 8c-2 3 2 5 0 8M32 8c-2 3 2 5 0 8" stroke="#94a3b8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="ic-food8" viewBox="0 0 64 64">
+    <path d="M18 34h28l-4 20H22l-4-20z" fill="#f59e0b"/>
+    <path d="M14 34c0-6 8-11 18-11s18 5 18 11H14z" fill="#f9a8d4"/>
+    <circle cx="32" cy="17" r="4" fill="#e11d48"/>
+  </symbol>
+</svg>
 <div id="app">
 
   <!-- ================= LOGIN ================= -->
   <div class="view active" id="view-login">
-    <div class="logo-big">🍔</div>
+    <div class="logo-big"><svg><use href="#ic-burger"/></svg></div>
     <div class="app-name">HappyMunch</div>
     <div class="app-sub">Pre-order · Pay with UPI · Skip the queue</div>
     <div class="glass">
@@ -262,8 +382,8 @@
       <p>What are you munching today?</p>
     </div>
     <div class="chip-row">
-      <button class="chip" onclick="go('history')">📋 My Orders</button>
-      <button class="chip" onclick="loadVendors(true)">↻ Refresh</button>
+      <button class="chip" onclick="go('history')"><svg class="ic"><use href="#ic-clipboard"/></svg> My Orders</button>
+      <button class="chip" onclick="loadVendors(true)"><svg class="ic"><use href="#ic-refresh"/></svg> Refresh</button>
     </div>
     <div class="sec-title">Approved vendors</div>
     <div id="vendors-list"></div>
@@ -279,7 +399,7 @@
     </div>
     <div class="menu-grid" id="menu-grid"></div>
     <button class="cart-bar" id="cart-bar" onclick="go('cart')">
-      <span class="cb-l">🛒 View Cart (<span id="cart-count">0</span>)</span>
+      <span class="cb-l"><svg class="ic"><use href="#ic-cart"/></svg> View Cart (<span id="cart-count">0</span>)</span>
       <span class="cb-r" id="cart-total">₹0.00</span>
     </button>
   </div>
@@ -315,7 +435,7 @@
     <div class="slots-wrap" id="slots"></div>
     <div id="pay-slot"></div>
     <div class="success-card" id="success" style="display:none">
-      <div class="tick">✓</div>
+      <div class="tick"><svg><use href="#ic-check"/></svg></div>
       <h3>Payment done!</h3>
       <div class="oid" id="succ-oid"></div>
       <p>Show this QR at the counter during your pickup slot</p>
@@ -360,8 +480,8 @@ const state = {
 const $ = (id) => document.getElementById(id);
 const money = (cents) => "₹" + ((cents || 0) / 100).toFixed(2);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-const VENDOR_EMOJIS = ["🍜","🥘","🥪","🥗","🍛","🍰","☕","🧁"];
-const vendorEmoji = (v) => VENDOR_EMOJIS[Math.abs(String(v.id || v.name).split("").reduce((a,c)=>a+c.charCodeAt(0),0)) % VENDOR_EMOJIS.length];
+const VENDOR_ICONS = ["ic-food1","ic-food2","ic-food3","ic-food4","ic-food5","ic-food6","ic-food7","ic-food8"];
+const vendorIcon = (v) => VENDOR_ICONS[Math.abs(String(v.id || v.name).split("").reduce((a,c)=>a+c.charCodeAt(0),0)) % VENDOR_ICONS.length];
 
 // --------------------------- API helpers -----------------------------------
 function unwrap(res) {
@@ -471,11 +591,11 @@ async function loadVendors(silent) {
 function renderVendors() {
   const el = $("vendors-list");
   if (!state.vendors.length) {
-    el.innerHTML = '<div class="empty"><span class="big">🍽️</span>No vendors available yet.</div>'; return;
+    el.innerHTML = '<div class="empty"><span class="big"><svg class="ic"><use href="#ic-plate"/></svg></span>No vendors available yet.</div>'; return;
   }
   el.innerHTML = state.vendors.map((v, i) => `
     <div class="vendor-card" onclick="openVendor(${i})">
-      <div class="vendor-emoji">${vendorEmoji(v)}</div>
+      <div class="vendor-emoji"><svg><use href="#${vendorIcon(v)}"/></svg></div>
       <div class="vendor-info">
         <b>${esc(v.vendor_name || v.name)}</b>
         <span>${esc(v.counter_location || "")}</span><br/>
@@ -501,18 +621,18 @@ async function loadMenu() {
     state.menu = data.menu_items || [];
     renderMenu();
   } catch (e) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="big">😕</span>Could not load menu.<br>' + esc(e.message) + '</div>';
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="big"><svg class="ic"><use href="#ic-sad"/></svg></span>Could not load menu.<br>' + esc(e.message) + '</div>';
   }
 }
 
 function renderMenu() {
   const grid = $("menu-grid");
   if (!state.menu.length) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="big">📭</span>This vendor has no menu items yet.</div>'; return;
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="big"><svg class="ic"><use href="#ic-inbox"/></svg></span>This vendor has no menu items yet.</div>'; return;
   }
   grid.innerHTML = state.menu.map((it) => `
     <div class="food-card ${it.is_available === false ? "unavail" : ""}">
-      <div class="food-img">${it.image_url ? '<img src="' + esc(it.image_url) + '" style="width:100%;height:100%;object-fit:cover" alt="">' : "🍽️"}</div>
+      <div class="food-img">${it.image_url ? '<img src="' + esc(it.image_url) + '" style="width:100%;height:100%;object-fit:cover" alt="">' : `<svg><use href="#${vendorIcon(it)}"/></svg>`}</div>
       <div class="food-body">
         <b>${esc(it.name)}</b>
         <div class="fdesc">${esc(it.description || "")}</div>
@@ -560,7 +680,7 @@ function renderCart() {
   $("cart-item-n").textContent = state.cart.length + " item(s)";
   $("cart-total2").textContent = money(cartTotal());
   if (!state.cart.length) {
-    list.innerHTML = '<div class="empty"><span class="big">🛒</span>Your cart is empty.<br>Browse a vendor and add items.</div>'; return;
+    list.innerHTML = '<div class="empty"><span class="big"><svg class="ic"><use href="#ic-cart"/></svg></span>Your cart is empty.<br>Browse a vendor and add items.</div>'; return;
   }
   list.innerHTML = state.cart.map((c) => `
     <div class="cart-row">
@@ -658,20 +778,20 @@ function renderPayStep() {
       <div class="pay-body">
         <div class="pay-note">Pay online with UPI — <b>no cash on delivery</b>. Tap an app below to pay, then confirm. Your order is sent to the kitchen once payment is done.</div>
         <div class="pay-to">
-          <div class="pt-ico">💳</div>
+          <div class="pt-ico"><svg class="ic"><use href="#ic-card"/></svg></div>
           <div><b>Payee</b><span>${esc(payee)}</span></div>
         </div>
         <div class="pay-apps">
-          <button class="pay-app pa-gpay" onclick="openUpi('gpay')"><span class="ico">🅶</span>GPay</button>
-          <button class="pay-app pa-phonepe" onclick="openUpi('phonepe')"><span class="ico">📱</span>PhonePe</button>
-          <button class="pay-app pa-paytm" onclick="openUpi('paytm')"><span class="ico">🅿️</span>Paytm</button>
+          <button class="pay-app pa-gpay" onclick="openUpi('gpay')"><span class="ico"><svg class="ic"><use href="#ic-gpay"/></svg></span>GPay</button>
+          <button class="pay-app pa-phonepe" onclick="openUpi('phonepe')"><span class="ico"><svg class="ic"><use href="#ic-phone"/></svg></span>PhonePe</button>
+          <button class="pay-app pa-paytm" onclick="openUpi('paytm')"><span class="ico"><svg class="ic"><use href="#ic-paytm"/></svg></span>Paytm</button>
           <button class="pay-app pa-more" onclick="openUpi('more')">_more UPI apps_</button>
         </div>
         <div class="pay-qr">
           <div class="qrbox" id="upi-qr"></div>
           <p>Or scan with any UPI app</p>
         </div>
-        <button class="paid-btn" onclick="placeOrderPaid()">✓ I've paid — place my order</button>
+        <button class="paid-btn" onclick="placeOrderPaid()"><svg class="ic"><use href="#ic-check"/></svg> I've paid — place my order</button>
         <a class="cancel-link" href="#" onclick="return false">Having trouble? Use any UPI app to scan the code above.</a>
       </div>
     </div>`;
@@ -742,7 +862,7 @@ async function loadOrders() {
     const data = await request("/api/orders/my");
     const orders = data.orders || [];
     if (!orders.length) {
-      list.innerHTML = '<div class="empty"><span class="big">🧾</span>No orders yet.<br>Your orders will show up here.</div>'; return;
+      list.innerHTML = '<div class="empty"><span class="big"><svg class="ic"><use href="#ic-receipt"/></svg></span>No orders yet.<br>Your orders will show up here.</div>'; return;
     }
     list.innerHTML = orders.map((o) => {
       const [bg, fg] = STATUS_COLORS[o.status] || ["#f1f5f9", "#334155"];
@@ -753,7 +873,7 @@ async function loadOrders() {
           <b>#${esc(o.order_number)}</b>
           <span>${esc(o.vendor_name || "")}</span>
           ${when ? "<em>Pickup " + when.toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) + "</em>" : ""}
-          ${paid ? '<span class="paid-tag">✓ Paid via UPI</span>' : ""}
+          ${paid ? '<span class="paid-tag"><svg class="ic"><use href="#ic-check"/></svg> Paid via UPI</span>' : ""}
         </div>
         <div style="text-align:right">
           <div class="status-pill" style="background:${bg};color:${fg}">${esc(String(o.status).replace(/_/g, " "))}</div>
@@ -761,7 +881,7 @@ async function loadOrders() {
         </div>
       </div>`;
     }).join("");
-  } catch (e) { list.innerHTML = '<div class="empty"><span class="big">😕</span>Could not load orders.</div>'; }
+  } catch (e) { list.innerHTML = '<div class="empty"><span class="big"><svg class="ic"><use href="#ic-sad"/></svg></span>Could not load orders.</div>'; }
 }
 
 // --------------------------- Boot ------------------------------------------

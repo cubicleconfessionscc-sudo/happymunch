@@ -87,7 +87,8 @@
 
   /* UPI band */
   .upi-band { background: var(--bg); border-radius: 28px; padding: 40px 30px; text-align: center; color: #fff; position: relative; overflow: hidden; }
-  .upi-band::before { content: "💳"; position: absolute; right: -10px; top: -20px; font-size: 140px; opacity: .08; }
+  .upi-band::before { content: ""; position: absolute; right: -10px; top: -20px; width: 140px; height: 140px; opacity: .08;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23ffffff' stroke-width='5' stroke-linejoin='round'%3E%3Crect x='6' y='14' width='52' height='36' rx='7'/%3E%3Cpath d='M6 24h52v10H6z' fill='%23ffffff' stroke='none'/%3E%3C/svg%3E") center/contain no-repeat; }
   .upi-band h3 { font-size: clamp(22px, 4vw, 30px); font-weight: 900; letter-spacing: -.6px; }
   .upi-band p { color: #c7d2fe; margin: 10px auto 22px; max-width: 560px; font-size: 15px; }
   .upi-apps { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
@@ -131,13 +132,73 @@
   footer { border-top: 1px solid var(--line); background: #fff; padding: 28px 0; margin-top: 20px; }
   .foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 13.5px; color: var(--muted); }
   .note { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 13.5px; padding: 13px 17px; border-radius: 13px; margin-top: 18px; }
+
+  /* Inline SVG icons (render identically in every browser, unlike emoji) */
+  .ic { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
+  .brand .logo svg { width: 22px; height: 22px; }
+  .dl-icon svg { width: 31px; height: 31px; }
+  .live-link .ico svg { width: 24px; height: 24px; }
+  .upi-app svg { width: 15px; height: 15px; }
+  .btn svg { width: 17px; height: 17px; }
+  .note svg { width: 15px; height: 15px; vertical-align: -2px; }
+  .creds td svg { width: 15px; height: 15px; vertical-align: -3px; margin-right: 5px; }
+  .dl-icon.vnd { color: #fff; }
 </style>
 </head>
 <body>
 
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="ic-burger" viewBox="0 0 64 64">
+    <path d="M5 27C5 15.4 16.2 6 32 6s27 9.4 27 21H5z" fill="#f6a94a"/>
+    <g fill="#fde68a"><ellipse cx="20" cy="17" rx="2.2" ry="1.5"/><ellipse cx="32" cy="13.5" rx="2.2" ry="1.5"/><ellipse cx="44" cy="17" rx="2.2" ry="1.5"/></g>
+    <path d="M5 28h54c0 3.3-2.7 6-6 6-1.4 0-2.7-.5-3.7-1.3-.9 1-2.2 1.7-3.8 1.7-1.5 0-2.9-.6-3.8-1.6-.9.9-2.2 1.6-3.8 1.6-1.4 0-2.7-.5-3.7-1.4-.9.8-2.2 1.4-3.8 1.4-1.4 0-2.7-.5-3.7-1.3-.9.9-2.2 1.5-3.8 1.5s-2.9-.6-3.8-1.5c-1 .8-2.3 1.3-3.7 1.3-1.5 0-2.9-.6-3.8-1.6-1 .8-2.3 1.3-3.7 1.3-3.3 0-6-2.7-6-6z" fill="#7cc36a"/>
+    <rect x="7" y="36" width="50" height="9" rx="4.5" fill="#7c3a1e"/>
+    <path d="M7 45h50v2.5C57 53.5 52 58 46 58H18c-6 0-11-4.5-11-10.5V45z" fill="#f6a94a"/>
+  </symbol>
+  <symbol id="ic-chef" viewBox="0 0 64 64" fill="currentColor">
+    <path d="M20 37c-6.6 0-12-4.9-12-11s5.4-11 12-11c.8-6 6-10.7 12-10.7S43.2 9 44 15c6.6 0 12 4.9 12 11s-5.4 11-12 11v13H20V37z"/>
+    <rect x="20" y="42" width="24" height="12" rx="3.5" opacity=".7"/>
+  </symbol>
+  <symbol id="ic-plate" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="32" cy="34" r="17"/><circle cx="32" cy="34" r="9" opacity=".45"/>
+    <path d="M13 8v13M9 8v9c0 2.4 1.8 4 4 4s4-1.6 4-4V8M52 8c-3.4 0-6 5.4-6 11s2 8 4.5 8v29"/>
+  </symbol>
+  <symbol id="ic-download" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 8v30M18 26l14 14 14-14M10 52h44"/>
+  </symbol>
+  <symbol id="ic-phone" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5">
+    <rect x="18" y="6" width="28" height="52" rx="7"/><path d="M28 12h8" stroke-linecap="round"/>
+    <circle cx="32" cy="50" r="2.5" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ic-gpay" viewBox="0 0 64 64">
+    <text x="32" y="46" text-anchor="middle" font-size="44" font-weight="800" fill="#ffffff" font-family="Arial, sans-serif">G</text>
+  </symbol>
+  <symbol id="ic-paytm" viewBox="0 0 64 64">
+    <text x="32" y="46" text-anchor="middle" font-size="44" font-weight="800" fill="#ffffff" font-family="Arial, sans-serif">P</text>
+  </symbol>
+  <symbol id="ic-lock" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linejoin="round">
+    <rect x="14" y="27" width="36" height="29" rx="7"/><path d="M21 27v-8a11 11 0 0 1 22 0v8"/>
+    <circle cx="32" cy="41" r="3" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ic-chart" viewBox="0 0 64 64" fill="currentColor">
+    <rect x="8" y="34" width="11" height="22" rx="3.5"/><rect x="26.5" y="20" width="11" height="36" rx="3.5"/><rect x="45" y="8" width="11" height="48" rx="3.5"/>
+  </symbol>
+  <symbol id="ic-gear" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round">
+    <circle cx="32" cy="32" r="9"/>
+    <path d="M32 6v7M32 51v7M6 32h7M51 32h7M13.2 13.2l5 5M45.8 45.8l5 5M50.8 13.2l-5 5M18.2 45.8l-5 5"/>
+  </symbol>
+  <symbol id="ic-user" viewBox="0 0 64 64" fill="currentColor">
+    <circle cx="32" cy="20" r="12"/><path d="M10 58c0-12 10-18 22-18s22 6 22 18a3 3 0 0 1-3 3H13a3 3 0 0 1-3-3z"/>
+  </symbol>
+  <symbol id="ic-shield" viewBox="0 0 64 64" fill="currentColor">
+    <path d="M32 4 8 14v18c0 15 10.5 24.7 24 28 13.5-3.3 24-13 24-28V14L32 4z"/>
+    <path d="m21 32 8 8 15-15" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
 <nav>
   <div class="container nav-inner">
-    <div class="brand"><span class="logo">🍔</span> HappyMunch</div>
+    <div class="brand"><span class="logo"><svg><use href="#ic-burger"/></svg></span> HappyMunch</div>
     <div class="nav-links">
       <a href="#download">Downloads</a>
       <a href="https://admin-dashboard-production-2a67.up.railway.app" target="_blank" rel="noopener">Admin</a>
@@ -152,8 +213,8 @@
     <h1>Skip the queue.<br /><span class="grad">Pre-order · UPI pay · Pick up.</span></h1>
     <p class="sub">HappyMunch is a smart cafeteria ordering system — employees order from their phone or browser and pay online with UPI, vendors prepare in advance, and everyone picks up at a scheduled slot. No lines, no cash.</p>
     <div class="hero-btns">
-      <a class="btn btn-primary" href="app.html">🍽️ Order in your browser</a>
-      <a class="btn btn-ghost" href="#download">⬇️ Download the apps</a>
+      <a class="btn btn-primary" href="app.html"><svg class="ic"><use href="#ic-plate"/></svg> Order in your browser</a>
+      <a class="btn btn-ghost" href="#download"><svg class="ic"><use href="#ic-download"/></svg> Download the apps</a>
     </div>
 
     <div class="stats">
@@ -173,7 +234,7 @@
     </div>
     <div class="dl-grid">
       <div class="dl-card">
-        <div class="dl-icon emp">🍔</div>
+        <div class="dl-icon emp"><svg><use href="#ic-burger"/></svg></div>
         <h3>HappyMunch — Employee App</h3>
         <div class="desc">Browse vendors, pre-order food, pay online with UPI, choose a pickup slot and collect with a QR code.</div>
         <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.1.0</span><span class="tag">81.7 MB</span><span class="tag">UPI pay</span></div>
@@ -183,7 +244,7 @@
         </div>
       </div>
       <div class="dl-card">
-        <div class="dl-icon vnd">👨‍🍳</div>
+        <div class="dl-icon vnd"><svg><use href="#ic-chef"/></svg></div>
         <h3>HappyMunch — Vendor App</h3>
         <div class="desc">Set your UPI payment number, manage your menu, see incoming orders live, mark them ready and verify pickup.</div>
         <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.1.0</span><span class="tag">81.7 MB</span><span class="tag">UPI collect</span></div>
@@ -193,7 +254,7 @@
         </div>
       </div>
     </div>
-    <div class="note">📱 <b>Installing an APK:</b> download it on your Android phone and open the file — allow "Install from unknown sources" when prompted. The apps connect to the live HappyMunch cloud backend automatically.</div>
+    <div class="note"><svg class="ic"><use href="#ic-phone"/></svg> <b>Installing an APK:</b> download it on your Android phone and open the file — allow "Install from unknown sources" when prompted. The apps connect to the live HappyMunch cloud backend automatically.</div>
   </div>
 </section>
 
@@ -203,10 +264,10 @@
       <h3>Pay online with UPI — no cash, no change</h3>
       <p>Every order is paid online. The vendor's UPI number is built in, so one tap on Pay opens GPay, PhonePe or Paytm with the amount pre-filled. When you're back, your order is confirmed and in the kitchen.</p>
       <div class="upi-apps">
-        <span class="upi-app ua-gpay">🅶 GPay</span>
-        <span class="upi-app ua-phonepe">📱 PhonePe</span>
-        <span class="upi-app ua-paytm">🅿️ Paytm</span>
-        <span class="upi-app ua-note">🔒 100% online · no COD</span>
+        <span class="upi-app ua-gpay"><svg class="ic"><use href="#ic-gpay"/></svg> GPay</span>
+        <span class="upi-app ua-phonepe"><svg class="ic"><use href="#ic-phone"/></svg> PhonePe</span>
+        <span class="upi-app ua-paytm"><svg class="ic"><use href="#ic-paytm"/></svg> Paytm</span>
+        <span class="upi-app ua-note"><svg class="ic"><use href="#ic-lock"/></svg> 100% online · no COD</span>
       </div>
     </div>
   </div>
@@ -219,7 +280,7 @@
       <p>The full employee experience — login, browse vendors, build a cart, pay with UPI, pick a pickup slot and track your order — as a web app.</p>
     </div>
     <div style="text-align:center;">
-      <a class="btn btn-primary" href="app.html" style="font-size:16px; padding:16px 34px;">🍔 Open the HappyMunch Web App</a>
+      <a class="btn btn-primary" href="app.html" style="font-size:16px; padding:16px 34px;"><svg class="ic"><use href="#ic-burger"/></svg> Open the HappyMunch Web App</a>
     </div>
   </div>
 </section>
@@ -258,15 +319,15 @@
     </div>
     <div class="links-grid">
       <a class="live-link" href="app.html">
-        <div class="ico">🍔</div>
+        <div class="ico" style="color:#4f46e5"><svg class="ic"><use href="#ic-burger"/></svg></div>
         <div><b>Employee Web App</b><span>Order &amp; pay in your browser</span></div>
       </a>
       <a class="live-link" href="https://admin-dashboard-production-2a67.up.railway.app" target="_blank" rel="noopener">
-        <div class="ico">📊</div>
+        <div class="ico" style="color:#7c3aed"><svg class="ic"><use href="#ic-chart"/></svg></div>
         <div><b>Admin Dashboard</b><span>Vendors, orders &amp; analytics</span></div>
       </a>
       <a class="live-link" href="https://backend-production-acdc.up.railway.app/health" target="_blank" rel="noopener">
-        <div class="ico">⚙️</div>
+        <div class="ico" style="color:#64748b"><svg class="ic"><use href="#ic-gear"/></svg></div>
         <div><b>Backend API</b><span>Health check endpoint</span></div>
       </a>
     </div>
@@ -283,9 +344,9 @@
       <table>
         <thead><tr><th>Role</th><th>Login ID</th><th>Password</th><th>Where</th></tr></thead>
         <tbody>
-          <tr><td>🧑‍💼 Employee</td><td><code>EMP-0001</code></td><td><code>Emp@12345</code></td><td><a href="app.html">Web App / Employee APK</a></td></tr>
-          <tr><td>👨‍🍳 Vendor</td><td><code>santi@cafeteria.local</code></td><td><code>Vendor@12345</code></td><td>Vendor APK</td></tr>
-          <tr><td>🛡️ Admin</td><td><code>admin@cafeteria.local</code></td><td><code>Admin@12345</code></td><td><a href="https://admin-dashboard-production-2a67.up.railway.app" target="_blank" rel="noopener">Admin Dashboard</a></td></tr>
+          <tr><td><svg class="ic" style="color:#4f46e5"><use href="#ic-user"/></svg> Employee</td><td><code>EMP-0001</code></td><td><code>Emp@12345</code></td><td><a href="app.html">Web App / Employee APK</a></td></tr>
+          <tr><td><svg class="ic" style="color:#f59e0b"><use href="#ic-chef"/></svg> Vendor</td><td><code>santi@cafeteria.local</code></td><td><code>Vendor@12345</code></td><td>Vendor APK</td></tr>
+          <tr><td><svg class="ic" style="color:#7c3aed"><use href="#ic-shield"/></svg> Admin</td><td><code>admin@cafeteria.local</code></td><td><code>Admin@12345</code></td><td><a href="https://admin-dashboard-production-2a67.up.railway.app" target="_blank" rel="noopener">Admin Dashboard</a></td></tr>
         </tbody>
       </table>
     </div>
