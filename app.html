@@ -96,7 +96,7 @@
   }
   .home-hero h1 { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
   .home-hero p { font-size: 13px; color: #e0e7ff; margin-top: 4px; }
-  .chip-row { display: flex; gap: 8px; margin: 12px 14px 4px; }
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 14px 4px; }
   .chip { background: #fff; color: var(--primary); font-weight: 700; font-size: 12.5px; padding: 9px 14px;
     border-radius: 30px; border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(15,23,42,.05); }
   .sec-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin: 14px 18px 4px; }
@@ -249,6 +249,51 @@
   .paid-btn svg { width: 15px; height: 15px; vertical-align: -2px; }
   .paid-tag svg { width: 10px; height: 10px; vertical-align: 0px; }
   .success-card .tick svg { width: 34px; height: 34px; }
+
+  /* ---------- FORGOT PASSWORD / FEEDBACK / ACCOUNT ---------- */
+  .link-btn { display: block; margin: 13px auto 0; color: #c7d2fe; font-size: 13px; font-weight: 700;
+    text-decoration: underline; background: none; border: none; cursor: pointer; }
+  .ok-box { background: #10b98126; border: 1px solid #10b98166; color: #a7f3d0; font-size: 13px;
+    padding: 11px 13px; border-radius: 11px; margin-top: 14px; display: none; line-height: 1.5; }
+  .select { appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 13px center; background-size: 14px; padding-right: 38px; }
+  .form-pad { padding: 4px 16px 22px; }
+  .form-pad .label { color: var(--muted); }
+  .form-pad .input { background: #fff; border-color: var(--line); color: var(--text); }
+  .form-pad .input::placeholder { color: #94a3b8; }
+  .form-pad .input:focus { border-color: var(--primary); background: #fff; }
+  .form-pad textarea.input { min-height: 100px; resize: vertical; line-height: 1.5; }
+  .fb-lead { background: #eef2ff; border: 1px solid #c7d2fe; color: #4338ca; font-size: 13px; line-height: 1.55;
+    padding: 12px 14px; border-radius: 13px; margin: 12px 0 4px; }
+  .fb-lead b { color: #312e81; }
+  .cat-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 4px; }
+  .cat-pill { background: #fff; border: 1.5px solid var(--line); color: var(--muted); font-size: 12.5px;
+    font-weight: 700; padding: 8px 13px; border-radius: 999px; transition: .15s; }
+  .cat-pill.on { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 8px 18px -8px rgba(124,58,237,.7); }
+  .fb-stars { display: flex; gap: 7px; margin-top: 4px; }
+  .fb-star { padding: 2px; background: none; border: none; line-height: 0; }
+  .fb-star svg { width: 30px; height: 30px; color: #e2e8f0; transition: transform .12s, color .12s; }
+  .fb-star.on svg { color: #f59e0b; }
+  .fb-star:active svg { transform: scale(1.25); }
+  .fb-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; margin: 9px 14px; padding: 14px; }
+  .fb-card .fb-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .fb-card .fb-msg { font-size: 14px; line-height: 1.55; margin: 7px 0 2px; white-space: pre-wrap; }
+  .fb-meta { font-size: 11.5px; color: #94a3b8; }
+  .fb-meta .st { display: inline-block; width: 12px; height: 12px; color: #f59e0b; vertical-align: -1px; }
+  .fb-badge { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px;
+    padding: 3px 9px; border-radius: 999px; }
+  .fb-badge.new { background: #fef3c7; color: #92400e; }
+  .fb-badge.read { background: #e0e7ff; color: #3730a3; }
+  .fb-badge.resolved { background: #d1fae5; color: #065f46; }
+  .fb-reply { background: #f1f5f9; border-left: 3px solid var(--primary); border-radius: 0 12px 12px 0;
+    padding: 9px 12px; margin-top: 9px; font-size: 13px; line-height: 1.55; }
+  .fb-reply b { display: block; font-size: 11px; color: var(--primary); text-transform: uppercase;
+    letter-spacing: .5px; margin-bottom: 3px; }
+  .info-card { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border-radius: 18px;
+    margin: 14px; padding: 18px; box-shadow: 0 18px 40px -18px rgba(79,70,229,.8); }
+  .info-card h3 { margin: 0 0 5px; font-size: 18px; letter-spacing: -.3px; }
+  .info-card p { margin: 2px 0; font-size: 13.5px; color: #e0e7ff; }
 </style>
 </head>
 <body>
@@ -356,6 +401,17 @@
     <path d="M14 34c0-6 8-11 18-11s18 5 18 11H14z" fill="#f9a8d4"/>
     <circle cx="32" cy="17" r="4" fill="#e11d48"/>
   </symbol>
+  <symbol id="ic-star" viewBox="0 0 64 64">
+    <path d="M32 6l7.7 15.6 17.3 2.5-12.5 12.2 3 17.2L32 44.7 16.5 53.5l3-17.2L7 24.1l17.3-2.5z" fill="currentColor"/>
+  </symbol>
+  <symbol id="ic-chat" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M56 30c0 10-10.7 18-24 18-2.8 0-5.5-.3-8-.9L12 54l3.6-10.2C11.4 40.7 8 35.8 8 30 8 20 18.7 12 32 12s24 8 24 18z"/>
+    <path d="M22 27h20M22 36h12"/>
+  </symbol>
+  <symbol id="ic-key" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="24" cy="40" r="12"/>
+    <path d="M33 31l20-20M45 19l7 7M39 25l5 5"/>
+  </symbol>
 </svg>
 <div id="app">
 
@@ -371,6 +427,7 @@
       <input class="input" id="login-pw" type="password" placeholder="••••••••" autocomplete="off" />
       <div class="err-box" id="login-err"></div>
       <button class="btn-main" id="login-btn" onclick="doLogin()">Sign In</button>
+      <button class="link-btn" onclick="go('forgot')">Forgot password?</button>
     </div>
     <div class="demo-hint">Demo — <code>EMP-0001</code> / <code>Emp@12345</code></div>
   </div>
@@ -383,6 +440,8 @@
     </div>
     <div class="chip-row">
       <button class="chip" onclick="go('history')"><svg class="ic"><use href="#ic-clipboard"/></svg> My Orders</button>
+      <button class="chip" onclick="go('feedback')"><svg class="ic"><use href="#ic-chat"/></svg> Feedback</button>
+      <button class="chip" onclick="go('account')"><svg class="ic"><use href="#ic-key"/></svg> Account</button>
       <button class="chip" onclick="loadVendors(true)"><svg class="ic"><use href="#ic-refresh"/></svg> Refresh</button>
     </div>
     <div class="sec-title">Approved vendors</div>
@@ -454,6 +513,74 @@
     <div id="orders-list"></div>
   </div>
 
+  <!-- ================= FORGOT PASSWORD ================= -->
+  <div class="view" id="view-forgot">
+    <div class="topbar">
+      <button class="back" onclick="go('login')">‹</button>
+      <h2>Forgot password</h2>
+    </div>
+    <div class="form-pad">
+      <p class="fb-lead">Enter your Employee ID. A reset request goes straight to your cafeteria admin — they'll set a new password for you, and you can change it right after signing in.</p>
+      <label class="label">Employee ID</label>
+      <input class="input" id="forgot-id" placeholder="e.g. EMP-0001" autocapitalize="characters" autocomplete="off" />
+      <div class="err-box" id="forgot-err"></div>
+      <div class="ok-box" id="forgot-ok"></div>
+      <button class="btn-main" id="forgot-btn" style="margin-top:14px" onclick="requestReset()">Send reset request</button>
+      <p class="fb-meta" style="text-align:center;margin-top:16px">Remembered it? <b style="color:var(--primary);cursor:pointer" onclick="go('login')">Back to sign in</b></p>
+    </div>
+  </div>
+
+  <!-- ================= FEEDBACK ================= -->
+  <div class="view" id="view-feedback">
+    <div class="topbar">
+      <button class="back" onclick="go('home')">‹</button>
+      <h2>Feedback</h2>
+      <span class="mini" id="fb-count"></span>
+    </div>
+    <div class="form-pad">
+      <div class="fb-lead"><b>Every feedback goes to your cafeteria admin</b> — and when you pick a counter above, it reaches that vendor too.</div>
+      <label class="label">About</label>
+      <select class="input select" id="fb-vendor"></select>
+      <label class="label">Category</label>
+      <div class="cat-row" id="fb-cats"></div>
+      <label class="label">Rating</label>
+      <div class="fb-stars" id="fb-stars"></div>
+      <label class="label">Your feedback</label>
+      <textarea class="input" id="fb-msg" placeholder="Tell us what went great, or what we should fix…" maxlength="2000"></textarea>
+      <div class="err-box" id="fb-err"></div>
+      <button class="btn-main" id="fb-btn" style="margin-top:14px" onclick="sendFeedback()">Send feedback</button>
+    </div>
+    <div class="sec-title" id="fb-my-title" style="display:none">My feedback & replies</div>
+    <div id="fb-my-list"></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- ================= ACCOUNT & SECURITY ================= -->
+  <div class="view" id="view-account">
+    <div class="topbar">
+      <button class="back" onclick="go('home')">‹</button>
+      <h2>Account &amp; security</h2>
+    </div>
+    <div class="info-card">
+      <h3 id="acc-name">Employee</h3>
+      <p id="acc-id">—</p>
+      <p>Employee · HappyMunch Cafeteria</p>
+    </div>
+    <div class="form-pad">
+      <div class="sec-title" style="margin:0 0 2px">Change password</div>
+      <label class="label">Current password</label>
+      <input class="input" id="pw-current" type="password" placeholder="••••••••" autocomplete="current-password" />
+      <label class="label">New password</label>
+      <input class="input" id="pw-new" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+      <label class="label">Confirm new password</label>
+      <input class="input" id="pw-confirm" type="password" placeholder="Repeat the new password" autocomplete="new-password" />
+      <div class="err-box" id="pw-err"></div>
+      <div class="ok-box" id="pw-ok"></div>
+      <button class="btn-main" id="pw-btn" style="margin-top:14px" onclick="changePw()">Update password</button>
+      <button class="signout" style="margin-top:20px;width:100%" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
   <div class="loader" id="loader"><div class="spinner"></div></div>
 </div>
 <div id="toast"></div>
@@ -496,9 +623,15 @@ async function request(path, options = {}) {
   let body = null;
   try { body = await res.json(); } catch (_) {}
   if (res.status === 401 && state.refreshToken && !options._retried) {
-    const ok = await tryRefresh();
-    if (ok) return request(path, { ...options, _retried: true });
-    logoutToLogin();
+    // Only session expiry triggers a refresh — an auth *logic* 401
+    // (e.g. "Current password is incorrect") must surface to the caller.
+    const msg = (body && (body.error || "")) + "";
+    const sessionExpired = /token|authorization header|not authenticated/i.test(msg);
+    if (sessionExpired) {
+      const ok = await tryRefresh();
+      if (ok) return request(path, { ...options, _retried: true });
+      logoutToLogin();
+    }
   }
   if (!res.ok) {
     const err = new Error((body && (body.error || body.message)) || ("Request failed (" + res.status + ")"));
@@ -515,9 +648,14 @@ async function tryRefresh() {
     });
     if (!res.ok) return false;
     const data = unwrap(await res.json());
-    state.accessToken = data.accessToken; state.refreshToken = data.refreshToken;
-    localStorage.setItem("hm_access", data.accessToken);
-    localStorage.setItem("hm_refresh", data.refreshToken);
+    const t = data.tokens || data;
+    state.accessToken = t.accessToken; state.refreshToken = t.refreshToken;
+    if (data.user) {
+      state.user = data.user;
+      localStorage.setItem("hm_user", JSON.stringify(data.user));
+    }
+    localStorage.setItem("hm_access", state.accessToken);
+    localStorage.setItem("hm_refresh", state.refreshToken);
     return true;
   } catch (_) { return false; }
 }
@@ -536,6 +674,8 @@ function go(view) {
   window.scrollTo(0, 0);
   if (view === "cart") renderCart();
   if (view === "history") loadOrders();
+  if (view === "feedback") openFeedback();
+  if (view === "account") openAccount();
   if (view === "order") { state.pendingOrder = null; $("success").style.display = "none"; $("pay-slot").innerHTML = ""; loadSlots(); }
 }
 
@@ -575,6 +715,135 @@ const logout = logoutToLogin;
 function enterApp() {
   $("hello").textContent = "Hello, " + (state.user.employee_id || state.user.email || "there");
   go("home"); loadVendors();
+}
+
+// --------------------------- Forgot password --------------------------------
+async function requestReset() {
+  const id = $("forgot-id").value.trim();
+  const err = $("forgot-err"), ok = $("forgot-ok");
+  err.style.display = "none"; ok.style.display = "none";
+  if (!id) { err.textContent = "Enter your Employee ID"; err.style.display = "block"; return; }
+  $("forgot-btn").disabled = true; loading(true);
+  try {
+    const data = await request("/api/auth/forgot-password", {
+      method: "POST", body: JSON.stringify({ identifier: id }),
+    });
+    ok.textContent = data.message || "Reset request sent to your cafeteria admin.";
+    ok.style.display = "block";
+  } catch (e) {
+    err.textContent = e.message || "Could not send the request"; err.style.display = "block";
+  } finally {
+    loading(false); $("forgot-btn").disabled = false;
+  }
+}
+
+// --------------------------- Feedback ---------------------------------------
+const FB_CATS = [
+  ["food", "Food"], ["service", "Service"], ["ambience", "Ambience"],
+  ["waiting_time", "Waiting time"], ["app", "App"], ["general", "General"],
+];
+const CAT_LABELS = Object.fromEntries(FB_CATS);
+let fbCat = "food", fbRating = 5;
+const fmtWhen = (iso) => iso
+  ? new Date(iso).toLocaleString([], { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })
+  : "";
+const starsSvg = (n) =>
+  Array.from({ length: 5 }, (_, i) =>
+    `<svg class="st" style="${i < n ? "" : "color:#e2e8f0"}"><use href="#ic-star"/></svg>`).join("");
+
+function openFeedback() {
+  $("fb-vendor").innerHTML =
+    `<option value="">General — cafeteria overall (reaches the admin)</option>` +
+    state.vendors.map((v) => `<option value="${v.id}">${esc(v.vendor_name)}</option>`).join("");
+  renderFbCats(); renderFbStars(); loadMyFeedback();
+}
+function renderFbCats() {
+  $("fb-cats").innerHTML = FB_CATS.map(([k, l]) =>
+    `<button type="button" class="cat-pill ${fbCat === k ? "on" : ""}" onclick="selectFbCat('${k}')">${l}</button>`).join("");
+}
+function selectFbCat(k) { fbCat = k; renderFbCats(); }
+function renderFbStars() {
+  $("fb-stars").innerHTML = [1, 2, 3, 4, 5].map((n) =>
+    `<button type="button" class="fb-star ${n <= fbRating ? "on" : ""}" onclick="setFbRating(${n})" aria-label="${n} of 5 stars"><svg><use href="#ic-star"/></svg></button>`).join("");
+}
+function setFbRating(n) { fbRating = n; renderFbStars(); }
+
+async function sendFeedback() {
+  const msg = $("fb-msg").value.trim();
+  const err = $("fb-err"); err.style.display = "none";
+  if (!msg) { err.textContent = "Write your feedback before sending"; err.style.display = "block"; return; }
+  const body = { category: fbCat, rating: fbRating, message: msg };
+  const vendorId = $("fb-vendor").value;
+  if (vendorId) body.vendorId = vendorId;
+  $("fb-btn").disabled = true; loading(true);
+  try {
+    const data = await request("/api/feedback", { method: "POST", body: JSON.stringify(body) });
+    toast(data.message || "Feedback sent — thank you!");
+    $("fb-msg").value = "";
+    loadMyFeedback();
+  } catch (e) {
+    err.textContent = e.message || "Could not send feedback"; err.style.display = "block";
+  } finally {
+    loading(false); $("fb-btn").disabled = false;
+  }
+}
+
+async function loadMyFeedback() {
+  try {
+    const data = await request("/api/feedback/my");
+    renderMyFeedback(data.feedback || []);
+  } catch (_) { /* keep the form usable even if the list fails */ }
+}
+
+function renderMyFeedback(list) {
+  const title = $("fb-my-title"), el = $("fb-my-list"), cnt = $("fb-count");
+  if (!list.length) { title.style.display = "none"; el.innerHTML = ""; cnt.textContent = ""; return; }
+  title.style.display = ""; cnt.textContent = list.length + " sent";
+  el.innerHTML = list.map((f) => `
+    <div class="fb-card">
+      <div class="fb-top">
+        <span class="fb-badge ${esc(f.status)}">${esc(String(f.status).replace(/_/g, " "))}</span>
+        <b style="font-size:13.5px">${esc(CAT_LABELS[f.category] || f.category || "General")}</b>
+        <span class="fb-meta">${starsSvg(f.rating || 0)}</span>
+        <span class="fb-meta" style="margin-left:auto">${fmtWhen(f.created_at)}</span>
+      </div>
+      <div class="fb-meta">${f.vendor_name ? "About " + esc(f.vendor_name) : "General feedback"}</div>
+      <div class="fb-msg">${esc(f.message)}</div>
+      ${f.reply ? `<div class="fb-reply"><b>Reply from ${esc(f.replied_by_role || "staff")}</b>${esc(f.reply)}
+        <div class="fb-meta" style="margin-top:4px">${fmtWhen(f.replied_at)}</div></div>` : ""}
+    </div>`).join("");
+}
+
+// --------------------------- Account & security -----------------------------
+function openAccount() {
+  const u = state.user || {};
+  $("acc-name").textContent = u.email || u.employee_id || "Employee";
+  $("acc-id").textContent = u.employee_id
+    ? "Employee ID " + u.employee_id + (u.email ? " · " + u.email : "")
+    : (u.email || "");
+}
+
+async function changePw() {
+  const cur = $("pw-current").value, nw = $("pw-new").value, cf = $("pw-confirm").value;
+  const err = $("pw-err"), ok = $("pw-ok");
+  err.style.display = "none"; ok.style.display = "none";
+  if (!cur || !nw || !cf) { err.textContent = "Fill in all three fields"; err.style.display = "block"; return; }
+  if (nw.length < 8) { err.textContent = "New password must be at least 8 characters"; err.style.display = "block"; return; }
+  if (nw !== cf) { err.textContent = "New passwords don't match"; err.style.display = "block"; return; }
+  $("pw-btn").disabled = true; loading(true);
+  try {
+    await request("/api/auth/change-password", {
+      method: "POST", body: JSON.stringify({ currentPassword: cur, newPassword: nw }),
+    });
+    ok.textContent = "Password updated — use it the next time you sign in.";
+    ok.style.display = "block";
+    $("pw-current").value = ""; $("pw-new").value = ""; $("pw-confirm").value = "";
+    toast("Password changed");
+  } catch (e) {
+    err.textContent = e.message || "Could not change the password"; err.style.display = "block";
+  } finally {
+    loading(false); $("pw-btn").disabled = false;
+  }
 }
 
 // --------------------------- Vendors ---------------------------------------
