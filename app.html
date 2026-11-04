@@ -294,6 +294,11 @@
     margin: 14px; padding: 18px; box-shadow: 0 18px 40px -18px rgba(79,70,229,.8); }
   .info-card h3 { margin: 0 0 5px; font-size: 18px; letter-spacing: -.3px; }
   .info-card p { margin: 2px 0; font-size: 13.5px; color: #e0e7ff; }
+
+  /* ---------- REGISTER ---------- */
+  .success-card .reg-msg { font-size: 14px; line-height: 1.6; color: #065f46;
+    font-weight: 600; margin: 6px 0 2px; }
+  .reg-hint { text-align: center; font-size: 11.5px; color: var(--muted); margin-top: 14px; }
 </style>
 </head>
 <body>
@@ -428,6 +433,7 @@
       <div class="err-box" id="login-err"></div>
       <button class="btn-main" id="login-btn" onclick="doLogin()">Sign In</button>
       <button class="link-btn" onclick="go('forgot')">Forgot password?</button>
+      <button class="link-btn" onclick="go('register')">New here? Create account</button>
     </div>
     <div class="demo-hint">Demo — <code>EMP-0001</code> / <code>Emp@12345</code></div>
   </div>
@@ -527,6 +533,46 @@
       <div class="ok-box" id="forgot-ok"></div>
       <button class="btn-main" id="forgot-btn" style="margin-top:14px" onclick="requestReset()">Send reset request</button>
       <p class="fb-meta" style="text-align:center;margin-top:16px">Remembered it? <b style="color:var(--primary);cursor:pointer" onclick="go('login')">Back to sign in</b></p>
+    </div>
+  </div>
+
+  <!-- ================= REGISTER ================= -->
+  <div class="view" id="view-register">
+    <div class="topbar">
+      <button class="back" onclick="go('login')">‹</button>
+      <h2>Create account</h2>
+    </div>
+    <div class="form-pad" id="reg-form">
+      <div class="fb-lead"><b>New here?</b> Register with your details — your cafeteria admin approves the account, then you sign in with your Employee ID.</div>
+      <label class="label">Full name</label>
+      <input class="input" id="reg-name" placeholder="e.g. Priya Sharma" autocomplete="name" />
+      <label class="label">Employee ID</label>
+      <input class="input" id="reg-eid" placeholder="Auto-generated (optional)" autocapitalize="characters" autocomplete="off" />
+      <label class="label">Email</label>
+      <input class="input" id="reg-email" type="email" placeholder="you@company.com" autocomplete="email" inputmode="email" />
+      <label class="label">Phone</label>
+      <input class="input" id="reg-phone" type="tel" placeholder="e.g. 98765 43210" autocomplete="tel" inputmode="tel" />
+      <label class="label">Password</label>
+      <input class="input" id="reg-pw" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+      <label class="label">Confirm password</label>
+      <input class="input" id="reg-pw2" type="password" placeholder="Repeat the password" autocomplete="new-password" />
+      <div id="reg-company-wrap" style="display:none">
+        <label class="label">Company</label>
+        <select class="input select" id="reg-company"></select>
+      </div>
+      <div class="err-box" id="reg-err"></div>
+      <button class="btn-main" id="reg-btn" style="margin-top:14px" onclick="doRegister()">Create account</button>
+      <p class="fb-meta" style="text-align:center;margin-top:16px">Already registered? <b style="color:var(--primary);cursor:pointer" onclick="go('login')">Back to sign in</b></p>
+    </div>
+    <div class="form-pad" id="reg-done" style="display:none">
+      <div class="success-card" style="margin:14px 0">
+        <div class="tick"><svg><use href="#ic-check"/></svg></div>
+        <h3>Registration received</h3>
+        <div class="oid" id="reg-emp"></div>
+        <p class="reg-msg" id="reg-msg"></p>
+        <button class="btn-main" style="margin-top:16px" onclick="go('login')">Back to sign in</button>
+      </div>
+      <p class="reg-hint">Nothing else to do — you'll sign in once your account is approved.</p>
     </div>
   </div>
 
@@ -676,6 +722,7 @@ function go(view) {
   if (view === "history") loadOrders();
   if (view === "feedback") openFeedback();
   if (view === "account") openAccount();
+  if (view === "register") openRegister();
   if (view === "order") { state.pendingOrder = null; $("success").style.display = "none"; $("pay-slot").innerHTML = ""; loadSlots(); }
 }
 
@@ -734,6 +781,81 @@ async function requestReset() {
     err.textContent = e.message || "Could not send the request"; err.style.display = "block";
   } finally {
     loading(false); $("forgot-btn").disabled = false;
+  }
+}
+
+// --------------------------- Register ---------------------------------------
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function openRegister() {
+  $("reg-err").style.display = "none";
+  $("reg-form").style.display = "";
+  $("reg-done").style.display = "none";
+  $("reg-pw").value = ""; $("reg-pw2").value = "";
+  loadCompanies();
+}
+
+// Companies list is public. The selector is hidden until it loads — if the
+// call fails (or returns nothing) it stays hidden and the server falls back
+// to the first active company.
+async function loadCompanies() {
+  const wrap = $("reg-company-wrap"), sel = $("reg-company");
+  wrap.style.display = "none"; sel.innerHTML = "";
+  try {
+    const data = await request("/api/auth/companies");
+    const companies = data.companies || [];
+    if (!companies.length) return;
+    sel.innerHTML = `<option value="">Choose a company (optional)</option>` +
+      companies.map((c) => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+    if (companies.length === 1) sel.value = String(companies[0].id);
+    wrap.style.display = "";
+  } catch (_) { /* keep the selector hidden and let the server default apply */ }
+}
+
+function regError(msg) {
+  const e = $("reg-err"); e.textContent = msg; e.style.display = "block";
+}
+
+async function doRegister() {
+  const fullName = $("reg-name").value.trim();
+  const employeeId = $("reg-eid").value.trim();
+  const email = $("reg-email").value.trim();
+  const phone = $("reg-phone").value.trim();
+  const pw = $("reg-pw").value, pw2 = $("reg-pw2").value;
+  $("reg-err").style.display = "none";
+  if (!fullName) { regError("Enter your full name"); return; }
+  if (pw.length < 8) { regError("Password must be at least 8 characters"); return; }
+  if (pw !== pw2) { regError("Passwords don't match"); return; }
+  if (email && !EMAIL_RE.test(email)) { regError("Enter a valid email address, or leave it blank"); return; }
+
+  const body = { fullName, password: pw };
+  if (employeeId) body.employeeId = employeeId;
+  if (email) body.email = email;
+  if (phone) body.phone = phone;
+  const companyId = $("reg-company").value;
+  if (companyId) body.companyId = /^\d+$/.test(companyId) ? Number(companyId) : companyId;
+
+  $("reg-btn").disabled = true; $("reg-btn").textContent = "Creating account...";
+  loading(true);
+  try {
+    // Registration only *requests* an account (pending approval) — the API
+    // returns no tokens, so nothing is stored and the user is NOT signed in.
+    const data = await request("/api/auth/register", { method: "POST", body: JSON.stringify(body) });
+    const user = data.user || {};
+    const emp = $("reg-emp");
+    emp.textContent = user.employee_id || "";
+    emp.style.display = user.employee_id ? "" : "none";
+    $("reg-msg").textContent = data.message ||
+      "Registration received — your cafeteria admin must approve your account before you can sign in.";
+    $("reg-pw").value = ""; $("reg-pw2").value = "";
+    $("reg-form").style.display = "none";
+    $("reg-done").style.display = "";
+    window.scrollTo(0, 0);
+  } catch (e) {
+    regError(e.message || "Could not create the account");
+  } finally {
+    loading(false);
+    $("reg-btn").disabled = false; $("reg-btn").textContent = "Create account";
   }
 }
 
@@ -1163,6 +1285,7 @@ async function loadOrders() {
 })();
 
 ["login-pw","login-id"].forEach(id => $(id).addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); }));
+["reg-name","reg-eid","reg-email","reg-phone","reg-pw","reg-pw2"].forEach(id => $(id).addEventListener("keydown", (e) => { if (e.key === "Enter") doRegister(); }));
 </script>
 </body>
 </html>
