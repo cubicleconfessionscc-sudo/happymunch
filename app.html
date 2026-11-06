@@ -162,6 +162,11 @@
   .total-row .tv { font-size: 20px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
   /* ---------- ORDER / SLOTS ---------- */
+.photo-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.66); display: flex; align-items: center; justify-content: center; z-index: 90; padding: 18px; }
+.photo-modal { background: #fff; border-radius: 18px; overflow: hidden; max-width: 460px; width: 100%; box-shadow: var(--shadow); }
+.photo-modal img { width: 100%; display: block; max-height: 68vh; object-fit: contain; background: #0f172a; }
+.pm-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+.photo-modal > span { display: block; text-align: center; font-size: 12px; color: var(--muted); padding: 11px; }
   .slot-day { font-size: 11.5px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; padding: 12px 16px 0; }
   .slots-wrap { display: flex; gap: 9px; overflow-x: auto; padding: 11px 14px; }
   .slot { background: #fff; border: 1.5px solid var(--line); border-radius: 13px; padding: 12px 14px;
@@ -1246,6 +1251,23 @@ const STATUS_COLORS = {
   payment_failed: ["#fee2e2", "#991b1b"], pending_payment: ["#f1f5f9", "#334155"],
 };
 
+async function viewOrderPhoto(orderId) {
+  try {
+    const data = await request(`/api/orders/${orderId}`);
+    if (!data.photo || !data.photo.image_data) { toast("No food photo on this order yet."); return; }
+    const ov = document.createElement("div");
+    ov.className = "photo-overlay";
+    ov.innerHTML = `<div class="photo-modal">
+      <div class="pm-head"><b>Food photo</b><button class="mini" aria-label="Close">✕</button></div>
+      <img src="${data.photo.image_data}" alt="Food photo">
+      <span>Uploaded by the kitchen 📸</span>
+    </div>`;
+    ov.querySelector(".pm-head button").addEventListener("click", () => ov.remove());
+    ov.addEventListener("click", (e) => { if (e.target === ov) ov.remove(); });
+    document.body.appendChild(ov);
+  } catch (e) { toast(e.message); }
+}
+
 async function loadOrders() {
   const list = $("orders-list");
   list.innerHTML = '<div class="empty"><div class="spinner"></div></div>';
@@ -1265,6 +1287,7 @@ async function loadOrders() {
           <span>${esc(o.vendor_name || "")}</span>
           ${when ? "<em>Pickup " + when.toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) + "</em>" : ""}
           ${paid ? '<span class="paid-tag"><svg class="ic"><use href="#ic-check"/></svg> Paid via UPI</span>' : ""}
+          ${o.has_photo ? '<button class="mini" style="margin-top:7px" onclick="viewOrderPhoto(\'' + o.id + '\')"><svg class="ic"><use href="#ic-receipt"/></svg> View food photo</button>' : ""}
         </div>
         <div style="text-align:right">
           <div class="status-pill" style="background:${bg};color:${fg}">${esc(String(o.status).replace(/_/g, " "))}</div>
