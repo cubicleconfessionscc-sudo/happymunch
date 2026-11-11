@@ -431,8 +431,8 @@
     <div class="app-name">HappyMunch</div>
     <div class="app-sub">Pre-order · Pay with UPI · Skip the queue</div>
     <div class="glass">
-      <label class="label">Employee ID</label>
-      <input class="input" id="login-id" placeholder="e.g. EMP-0001" autocapitalize="characters" autocomplete="off" />
+      <label class="label">Email</label>
+      <input class="input" id="login-id" type="email" placeholder="e.g. emp0001@cafeteria.local" autocapitalize="none" autocomplete="off" />
       <label class="label">Password</label>
       <input class="input" id="login-pw" type="password" placeholder="••••••••" autocomplete="off" />
       <div class="err-box" id="login-err"></div>
@@ -440,7 +440,7 @@
       <button class="link-btn" onclick="go('forgot')">Forgot password?</button>
       <button class="link-btn" onclick="go('register')">New here? Create account</button>
     </div>
-    <div class="demo-hint">Demo — <code>EMP-0001</code> / <code>Emp@12345</code></div>
+    <div class="demo-hint">Demo — <code>emp0001@cafeteria.local</code> / <code>Emp@12345</code></div>
   </div>
 
   <!-- ================= HOME ================= -->
@@ -531,9 +531,9 @@
       <h2>Forgot password</h2>
     </div>
     <div class="form-pad">
-      <p class="fb-lead">Enter your Employee ID. A reset request goes straight to your cafeteria admin — they'll set a new password for you, and you can change it right after signing in.</p>
-      <label class="label">Employee ID</label>
-      <input class="input" id="forgot-id" placeholder="e.g. EMP-0001" autocapitalize="characters" autocomplete="off" />
+      <p class="fb-lead">Enter your email. A reset request goes straight to your cafeteria admin — they'll set a new password for you, and you can change it right after signing in.</p>
+      <label class="label">Email</label>
+      <input class="input" id="forgot-id" type="email" placeholder="e.g. emp0001@cafeteria.local" autocapitalize="none" autocomplete="off" />
       <div class="err-box" id="forgot-err"></div>
       <div class="ok-box" id="forgot-ok"></div>
       <button class="btn-main" id="forgot-btn" style="margin-top:14px" onclick="requestReset()">Send reset request</button>
@@ -548,7 +548,7 @@
       <h2>Create account</h2>
     </div>
     <div class="form-pad" id="reg-form">
-      <div class="fb-lead"><b>New here?</b> Register with your details — your cafeteria admin approves the account, then you sign in with your Employee ID.</div>
+      <div class="fb-lead"><b>New here?</b> Register with your details — your cafeteria admin approves the account, then you sign in with your email.</div>
       <label class="label">Full name</label>
       <input class="input" id="reg-name" placeholder="e.g. Priya Sharma" autocomplete="name" />
       <label class="label">Employee ID</label>
@@ -736,7 +736,7 @@ async function doLogin() {
   const identifier = $("login-id").value.trim();
   const password = $("login-pw").value;
   const errBox = $("login-err"); errBox.style.display = "none";
-  if (!identifier || !password) { errBox.textContent = "Enter Employee ID and password"; errBox.style.display = "block"; return; }
+  if (!identifier || !password) { errBox.textContent = "Enter email and password"; errBox.style.display = "block"; return; }
   $("login-btn").disabled = true; $("login-btn").textContent = "Signing in...";
   loading(true);
   try {
@@ -751,7 +751,7 @@ async function doLogin() {
     localStorage.setItem("hm_refresh", data.tokens.refreshToken);
     enterApp();
   } catch (e) {
-    errBox.textContent = e.message || "Invalid Employee ID or password"; errBox.style.display = "block";
+    errBox.textContent = e.message || "Invalid email or password"; errBox.style.display = "block";
   } finally {
     loading(false); $("login-btn").disabled = false; $("login-btn").textContent = "Sign In";
   }
@@ -774,7 +774,7 @@ async function requestReset() {
   const id = $("forgot-id").value.trim();
   const err = $("forgot-err"), ok = $("forgot-ok");
   err.style.display = "none"; ok.style.display = "none";
-  if (!id) { err.textContent = "Enter your Employee ID"; err.style.display = "block"; return; }
+  if (!id) { err.textContent = "Enter your email"; err.style.display = "block"; return; }
   $("forgot-btn").disabled = true; loading(true);
   try {
     const data = await request("/api/auth/forgot-password", {
