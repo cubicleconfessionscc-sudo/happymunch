@@ -84,6 +84,13 @@
     background: var(--grad); color: #fff; transition: filter .12s ease; }
   .dl-btns a:hover { filter: brightness(1.08); }
   .dl-btns a.secondary { background: #eef2ff; color: var(--primary); }
+  .dl-qr { display: flex; align-items: center; gap: 14px; background: #f8fafc; border: 1px dashed #c7d2fe;
+    border-radius: 16px; padding: 14px; margin-top: 16px; }
+  .dl-qr .qr-box { background: #fff; padding: 8px; border-radius: 12px; line-height: 0;
+    box-shadow: 0 6px 18px -12px rgba(15,23,42,.6); flex-shrink: 0; }
+  .dl-qr .qr-box img, .dl-qr .qr-box canvas { display: block; width: 104px !important; height: 104px !important; }
+  .dl-qr .qr-copy b { display: block; font-size: 13.5px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
+  .dl-qr .qr-copy span { font-size: 12.5px; color: #64748b; line-height: 1.55; }
 
   /* UPI band */
   .upi-band { background: var(--bg); border-radius: 28px; padding: 40px 30px; text-align: center; color: #fff; position: relative; overflow: hidden; }
@@ -238,6 +245,10 @@
         <h3>HappyMunch — Employee App</h3>
         <div class="desc">Browse vendors, pre-order food, pay online with UPI, choose a pickup slot and collect with a QR code — plus send feedback straight to your cafeteria admin and vendor.</div>
         <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.1.5</span><span class="tag">81.8 MB</span><span class="tag">UPI pay</span><span class="tag">Feedback</span></div>
+        <div class="dl-qr">
+          <div class="qr-box" data-qr="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.1.5/HappyMunch-Employee-v1.1.5.apk"></div>
+          <div class="qr-copy"><b>Scan to install</b><span>Point your phone camera at the QR to download the Employee APK.</span></div>
+        </div>
         <div class="dl-btns">
           <a href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.1.5/HappyMunch-Employee-v1.1.5.apk">Download APK</a>
           <a class="secondary" href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.1.5/HappyMunch-Employee-v1.1.5.aab">AAB</a>
@@ -246,11 +257,15 @@
       <div class="dl-card">
         <div class="dl-icon vnd"><svg><use href="#ic-chef"/></svg></div>
         <h3>HappyMunch — Vendor App</h3>
-        <div class="desc">Set your UPI payment number, manage your menu with item photos (take or upload), see incoming orders live, mark them ready, verify pickup and reply to employee feedback about your counter.</div>
-        <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.1.6</span><span class="tag">82.2 MB</span><span class="tag">UPI collect</span><span class="tag">Feedback inbox</span></div>
+        <div class="desc">Set your UPI payment number, manage your menu with item photos (take or upload), see incoming orders live, mark them ready, verify pickup and reply to employee feedback about your counter. New counters get a 5-day free trial, then ₹499/month paid by UPI QR in the app.</div>
+        <div class="dl-meta"><span class="tag">Android 6.0+</span><span class="tag">v1.1.7</span><span class="tag">82.2 MB</span><span class="tag">5-day free trial</span><span class="tag">UPI QR pay</span></div>
+        <div class="dl-qr">
+          <div class="qr-box" data-qr="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.1.7/HappyMunch-Vendor-v1.1.7.apk"></div>
+          <div class="qr-copy"><b>Scan to install</b><span>Point your phone camera at the QR to download the Vendor APK.</span></div>
+        </div>
         <div class="dl-btns">
-          <a href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.1.6/HappyMunch-Vendor-v1.1.6.apk">Download APK</a>
-          <a class="secondary" href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.1.6/HappyMunch-Vendor-v1.1.6.aab">AAB</a>
+          <a href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.1.7/HappyMunch-Vendor-v1.1.7.apk">Download APK</a>
+          <a class="secondary" href="https://github.com/cubicleconfessionscc-sudo/happymunch/releases/download/v1.1.7/HappyMunch-Vendor-v1.1.7.aab">AAB</a>
         </div>
       </div>
     </div>
@@ -359,6 +374,20 @@
     <div>Node · PostgreSQL · Expo · UPI · <a href="app.html">Web App</a></div>
   </div>
 </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // App download QR codes — each encodes the APK link beside it.
+  document.querySelectorAll("[data-qr]").forEach(function (el) {
+    if (!window.QRCode) return;
+    new QRCode(el, {
+      text: el.getAttribute("data-qr"),
+      width: 104, height: 104,
+      colorDark: "#0f172a", colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  });
+</script>
 
 </body>
 </html>
