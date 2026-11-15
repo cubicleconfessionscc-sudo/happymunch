@@ -456,6 +456,7 @@
       <button class="chip" onclick="loadVendors(true)"><svg class="ic"><use href="#ic-refresh"/></svg> Refresh</button>
     </div>
     <div class="sec-title">Approved vendors</div>
+    <div class="chip-row" id="loc-chips" style="margin-bottom:6px"></div>
     <div id="vendors-list"></div>
     <button class="signout" onclick="logout()">Sign Out</button>
   </div>
@@ -650,6 +651,7 @@ const state = {
   accessToken: localStorage.getItem("hm_access") || null,
   refreshToken: localStorage.getItem("hm_refresh") || null,
   vendors: [], vendor: null, menu: [],
+  areaFilter: null, // location grouping: null = All, "Other" = no area set
   cart: [], cartVendorId: null,
   slots: [], slot: null,
   pendingOrder: null,   // order awaiting UPI payment confirmation
@@ -984,21 +986,69 @@ async function loadVendors(silent) {
   finally { loading(false); }
 }
 
+function renderLocChips() {
+  const el = $("loc-chips");
+  if (!el) return;
+  const areas = [...new Set(state.vendors.map((v) => String(v.area || "").trim()).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
+  const hasUnarea = state.vendors.some((v) => !String(v.area || "").trim());
+  if (!areas.length && !hasUnarea) { el.innerHTML = ""; return; }
+  const chip = (label, val) => `
+    <button class="chip" data-area="${val === null ? "" : esc(val)}"
+      onclick="setAreaFilter(this.dataset.area || null)"
+      style="${state.areaFilter === val ? "background:#fff7ed;border-color:#f97316;color:#c2410c" : ""}">
+      ${label}
+    </button>`;
+  el.innerHTML =
+    chip("All", null) +
+    areas.map((a) => chip("📍 " + esc(a), a)).join("") +
+    (hasUnarea ? chip("Other", "Other") : "");
+}
+
+function setAreaFilter(val) {
+  state.areaFilter = val;
+  renderLocChips();
+  renderVendors();
+}
+
 function renderVendors() {
   const el = $("vendors-list");
-  if (!state.vendors.length) {
+  const sec = document.querySelector("#view-home .sec-title");
+  const all = state.vendors;
+  const list = !state.areaFilter
+    ? all
+    : state.areaFilter === "Other"
+    ? all.filter((v) => !String(v.area || "").trim())
+    : all.filter((v) => String(v.area || "").trim() === state.areaFilter);
+  if (sec) {
+    sec.textContent = state.areaFilter && state.areaFilter !== "Other"
+      ? `Shops in ${state.areaFilter}`
+      : state.areaFilter === "Other"
+      ? "Shops without a location"
+      : "Approved vendors";
+  }
+  renderLocChips();
+  if (!all.length) {
     el.innerHTML = '<div class="empty"><span class="big"><svg class="ic"><use href="#ic-plate"/></svg></span>No vendors available yet.</div>'; return;
   }
-  el.innerHTML = state.vendors.map((v, i) => `
-    <div class="vendor-card" onclick="openVendor(${i})">
+  if (!list.length) {
+    el.innerHTML = '<div class="empty"><span class="big"><svg class="ic"><use href="#ic-plate"/></svg></span>No shops in this location yet.</div>'; return;
+  }
+  el.innerHTML = list.map((v) => `
+    <div class="vendor-card" onclick="openVendorById('${esc(v.id)}')">
       <div class="vendor-emoji"><svg><use href="#${vendorIcon(v)}"/></svg></div>
       <div class="vendor-info">
         <b>${esc(v.vendor_name || v.name)}</b>
-        <span>${esc(v.counter_location || "")}</span><br/>
+        <span>${esc([v.area ? "📍 " + v.area : "", v.counter_location || ""].filter(Boolean).join(" · "))}</span><br/>
         <span class="badge-ok">Approved · UPI accepted</span>
       </div>
       <div class="go">›</div>
     </div>`).join("");
+}
+
+function openVendorById(id) {
+  const idx = state.vendors.findIndex((v) => String(v.id) === String(id));
+  if (idx >= 0) openVendor(idx);
 }
 
 function openVendor(i) {
