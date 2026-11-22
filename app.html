@@ -114,6 +114,11 @@
   .badge-ok { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; color: var(--ok); margin-top: 6px;
     background: #10b9811a; padding: 3px 8px; border-radius: 20px; }
   .badge-ok::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+  .vendor-closed { opacity: .78; background: #fbfcfe; }
+  .badge-closed { display: inline-block; font-size: 9.5px; font-weight: 900; letter-spacing: .6px; color: #b91c1c;
+    background: #fee2e2; border: 1px solid #fecaca; padding: 2px 7px; border-radius: 8px; vertical-align: middle; margin-left: 6px; }
+  .badge-closed-soft { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; color: #64748b;
+    background: #f1f5f9; padding: 3px 8px; border-radius: 20px; margin-top: 6px; }
   .go { color: #cbd5e1; font-size: 26px; font-weight: 800; }
   .signout { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; color: var(--primary); font-weight: 800; font-size: 13.5px; padding: 10px; }
 
@@ -200,6 +205,12 @@
   .pay-qr { text-align: center; margin-top: 14px; }
   .pay-qr .qrbox { display: inline-block; background: #fff; padding: 10px; border-radius: 14px; border: 1px solid var(--line); }
   .pay-qr p { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+  .utr-box { margin-top: 16px; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 14px; padding: 13px; }
+  .utr-box label { font-size: 13px; color: #92400e; }
+  .utr-box p { font-size: 11.5px; color: #a16207; margin: 4px 0 0; line-height: 16px; }
+  .utr-input { width: 100%; margin-top: 10px; background: #fff; border: 1.5px solid #fcd34d; border-radius: 11px;
+    padding: 11px 13px; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: var(--text); text-transform: uppercase; }
+  .utr-input:focus { outline: none; border-color: #f59e0b; }
   .paid-btn { width: 100%; margin-top: 14px; background: linear-gradient(135deg,#10b981,#059669); color: #fff; font-weight: 800;
     font-size: 15px; padding: 15px; border-radius: 13px; box-shadow: 0 10px 22px -10px rgba(16,185,129,.7); }
   .paid-btn:active { transform: scale(.98); }
@@ -1034,21 +1045,29 @@ function renderVendors() {
   if (!list.length) {
     el.innerHTML = '<div class="empty"><span class="big"><svg class="ic"><use href="#ic-plate"/></svg></span>No shops in this location yet.</div>'; return;
   }
-  el.innerHTML = list.map((v) => `
-    <div class="vendor-card" onclick="openVendorById('${esc(v.id)}')">
-      <div class="vendor-emoji"><svg><use href="#${vendorIcon(v)}"/></svg></div>
+  el.innerHTML = list.map((v) => {
+    const closed = v.is_open === false;
+    return `
+    <div class="vendor-card ${closed ? "vendor-closed" : ""}" onclick="openVendorById('${esc(v.id)}')">
+      <div class="vendor-emoji" ${closed ? 'style="filter:grayscale(1);opacity:.55"' : ""}><svg><use href="#${vendorIcon(v)}"/></svg></div>
       <div class="vendor-info">
-        <b>${esc(v.vendor_name || v.name)}</b>
+        <b>${esc(v.vendor_name || v.name)}${closed ? ' <span class="badge-closed">CLOSED</span>' : ""}</b>
         <span>${esc([v.area ? "📍 " + v.area : "", v.counter_location || ""].filter(Boolean).join(" · "))}</span><br/>
-        <span class="badge-ok">Approved · UPI accepted</span>
+        <span class="${closed ? "badge-closed-soft" : "badge-ok"}">${closed ? "Currently not taking orders" : "Approved · UPI accepted"}</span>
       </div>
       <div class="go">›</div>
-    </div>`).join("");
+    </div>`; }).join("");
 }
 
 function openVendorById(id) {
   const idx = state.vendors.findIndex((v) => String(v.id) === String(id));
-  if (idx >= 0) openVendor(idx);
+  if (idx < 0) return;
+  // Shop open/closed (v1.1.11): a closed shop cannot be opened by customers.
+  if (state.vendors[idx].is_open === false) {
+    toast((state.vendors[idx].vendor_name || "This shop") + " is closed right now — they're not taking orders.");
+    return;
+  }
+  openVendor(idx);
 }
 
 function openVendor(i) {
@@ -1237,7 +1256,12 @@ function renderPayStep() {
           <div class="qrbox" id="upi-qr"></div>
           <p>Or scan with any UPI app</p>
         </div>
-        <button class="paid-btn" onclick="placeOrderPaid()"><svg class="ic"><use href="#ic-check"/></svg> I've paid — place my order</button>
+        <div class="utr-box">
+          <label for="utr-input"><b>UTR / Transaction reference</b></label>
+          <p>After paying, copy the UTR (10-24 characters) from your UPI app. Your order is placed only with a valid UTR.</p>
+          <input id="utr-input" class="utr-input" placeholder="e.g. 415823790124" maxlength="24" autocomplete="off" />
+        </div>
+        <button class="paid-btn" onclick="placeOrderPaid()"><svg class="ic"><use href="#ic-check"/></svg> Pay &amp; place my order</button>
         <a class="cancel-link" href="#" onclick="return false">Having trouble? Use any UPI app to scan the code above.</a>
       </div>
     </div>`;
@@ -1248,14 +1272,23 @@ function renderPayStep() {
   }
 }
 
-// Creates the order, then confirms the UPI payment. Online payment only —
-// there is no cash-on-delivery path.
+// Payment proof (UTR) is MANDATORY: the order is only created after the UTR
+// passes the server's pre-check, and it is only marked paid with that UTR.
 async function placeOrderPaid() {
   if (!state.cart.length) { toast("Add items to cart first"); go("menu"); return; }
   if (!state.slot) { toast("Choose a pickup time"); return; }
+  const utrEl = $("utr-input");
+  const utr = String(utrEl ? utrEl.value : "").trim().toUpperCase();
+  if (!/^[A-Z0-9]{10,24}$/.test(utr)) {
+    toast("Payment proof needed: paste the UTR from your UPI app (10-24 characters)");
+    if (utrEl) utrEl.focus();
+    return;
+  }
   loading(true);
   try {
-    // 1) create the order (pending payment)
+    // 0) pre-check the UTR BEFORE any order exists (no unpaid orders left over)
+    await request("/api/orders/check-utr", { method: "POST", body: JSON.stringify({ utr }) });
+    // 1) create the order (server rejects it if the shop is closed)
     const data = await request("/api/orders", {
       method: "POST",
       body: JSON.stringify({
@@ -1267,10 +1300,16 @@ async function placeOrderPaid() {
       }),
     });
     const order = data.order;
-    // 2) confirm the UPI payment (marks paid + confirmed)
+    // 2) confirm the UPI payment with the proof (marks paid + confirmed);
+    //    if it fails, cancel so no unpaid order is ever left behind.
     try {
-      await request("/api/orders/" + order.id + "/pay-upi", { method: "POST", body: JSON.stringify({ upi_transaction_ref: null }) });
-    } catch (_) { /* confirmation is best-effort; order still exists */ }
+      await request("/api/orders/" + order.id + "/pay-upi", { method: "POST", body: JSON.stringify({ upi_transaction_ref: utr }) });
+    } catch (payErr) {
+      try {
+        await request("/api/orders/" + order.id + "/status", { method: "PATCH", body: JSON.stringify({ status: "cancelled" }) });
+      } catch (_) { /* best-effort cleanup */ }
+      throw payErr;
+    }
     state.pendingOrder = order;
     state.cart = []; state.cartVendorId = null;
     const notesEl = $("order-notes"); if (notesEl) notesEl.value = "";
